@@ -593,7 +593,7 @@ function renderChampions(){
             <!-- Layer 1: character art -->
             <div class="card-character">
               ${c.image
-                ?`<img src="images/champions/${c.image}" alt="${c.name}" onerror="this.outerHTML='<div class=card-character-placeholder>${getCE(c.category)}</div>'">`
+                ?`<img src="images/champion/${c.image}" alt="${c.name}" onerror="this.outerHTML='<div class=card-character-placeholder>${getCE(c.category)}</div>'">`
                 :`<div class="card-character-placeholder">${getCE(c.category)}</div>`}
             </div>
             <!-- Layer 2: frame PNG overlay -->
@@ -628,7 +628,7 @@ function renderSupporters(){
           <div class="card-front-wrap">
             <div class="card-character">
               ${s.image
-                ?`<img src="images/supporters/${s.image}" alt="${s.name}" onerror="this.outerHTML='<div class=card-character-placeholder>✨</div>'">`
+                ?`<img src="images/supporter/${s.image}" alt="${s.name}" onerror="this.outerHTML='<div class=card-character-placeholder>✨</div>'">`
                 :`<div class="card-character-placeholder">✨</div>`}
             </div>
             <img class="card-frame-img" src="images/frame.png" alt="">
