@@ -196,12 +196,11 @@
   /* 2. Frame PNG — sits on top of character, pointer-events none so clicks pass through */
   .card-frame-img {
     position: absolute;
-    inset: -13% -13%;   /* slightly oversized so ornaments bleed naturally */
+    inset: -13% -13%;
     width: 130%; height: 130%;
     object-fit: fill;
     pointer-events: none;
     z-index: 10;
-    /* transparent PNG so character shows through the open area */
   }
 
   /* 3. Text overlays — positioned to align with frame elements */
@@ -209,61 +208,67 @@
   /* Name — sits in the top banner area of the frame */
   .card-name {
     position: absolute;
-    top: 6%; left: 8%; right: 22%;
+    top: 7.5%; left: 13%; right: 24%;
     z-index: 20;
     font-family: 'Cinzel', serif;
-    font-size: 0.6rem; font-weight: 700;
-    letter-spacing: 0.12em; text-transform: uppercase;
+    font-size: 0.58rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
     color: #ddeaff;
-    text-shadow: 0 1px 4px rgba(0,0,0,1), 0 0 8px rgba(0,0,0,0.9);
-    line-height: 1.2;
+    line-height: 1.25;
+    background: rgba(10, 25, 70, 0.82);
+    padding: 0.25rem 0.45rem;
+    border-radius: 2px;
+    backdrop-filter: blur(2px);
   }
 
   /* HP number — sits inside the heart badge (top right of frame) */
   .card-hp {
     position: absolute;
-    top: 3%; right: 4%;
+    top: 4.5%; right: 7%;
     z-index: 20;
     font-family: 'Cinzel', serif;
-    font-size: 0.9rem; font-weight: 700;
+    font-size: 0.85rem; font-weight: 700;
     color: white;
     text-shadow: 0 1px 5px rgba(0,0,0,1), 0 0 10px rgba(180,0,0,0.8);
-    width: 44px; height: 44px;
+    width: 38px; height: 38px;
     display: flex; align-items: center; justify-content: center;
-    padding-top: 4px;
+    padding-top: 3px;
   }
 
   /* SPAR roll number — sits on the red dice (bottom left of frame) */
   .card-spar-num {
     position: absolute;
-    bottom: 19%; left: 5%;
+    bottom: 17%; left: 8%;
     z-index: 20;
     font-family: 'Cinzel', serif;
-    font-size: 1.1rem; font-weight: 700;
+    font-size: 1rem; font-weight: 700;
     color: white;
     text-shadow: 0 1px 5px rgba(0,0,0,1), 0 0 10px rgba(180,0,0,0.6);
-    width: 52px; height: 52px;
+    width: 44px; height: 44px;
     display: flex; align-items: center; justify-content: center;
-    padding-bottom: 4px;
+    padding-bottom: 2px;
   }
 
   /* Ability text — bottom area above chevron */
   .card-ability {
     position: absolute;
-    bottom: 5%; left: 24%; right: 5%;
+    bottom: 7%; left: 30%; right: 8%;
     z-index: 20;
     font-family: 'Cinzel', serif;
     font-size: 0.5rem; font-weight: 600;
-    letter-spacing: 0.07em; text-transform: uppercase;
-    color: #e8d090;
-    text-shadow: 0 1px 4px rgba(0,0,0,1), 0 0 8px rgba(0,0,0,0.9);
-    line-height: 1.55; text-align: center;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: #f0e0a0;
+    line-height: 1.6; text-align: center;
+    background: rgba(5, 10, 25, 0.80);
+    padding: 0.3rem 0.4rem;
+    border-radius: 3px;
+    backdrop-filter: blur(2px);
   }
 
-  /* Supporter has no dice — ability is centered */
+  /* Supporter has no dice — ability is centered across full width */
   .card-ability.centered {
-    left: 6%; right: 6%;
-    bottom: 6%;
+    left: 10%; right: 10%;
+    bottom: 7%;
   }
 
   /* ══════════════════════════════════════
@@ -286,9 +291,8 @@
     background: repeating-linear-gradient(45deg, transparent, transparent 18px, rgba(240,165,0,0.02) 18px, rgba(240,165,0,0.02) 19px);
   }
   .card-back-frame-img {
-    position: absolute; inset: -4% -3%; width: 106%; height: 108%;
+    position: absolute; inset: -13% -13%; width: 130%; height: 130%;
     object-fit: fill; pointer-events: none; z-index: 10;
-    /* Filter to desaturate the heart/dice on back so it looks like a generic back */
     filter: saturate(0.3) brightness(0.7);
   }
   .card-back-content {
