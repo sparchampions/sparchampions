@@ -260,7 +260,7 @@ const CHAMPIONS = [
 
   // ── KNIGHTS ──────────────────────────────────────────────
   {
-    name: "Shinning Knight",
+    name: "Shining Knight",
     category: "Knights",
     hp: 50,
     sparRoll: 1,
