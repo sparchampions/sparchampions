@@ -68,7 +68,7 @@ const CHAMPIONS = [
     image: "magical-falcon.png"
   },
   {
-    name: "Rising Pheonix",
+    name: "Rising Phoenix",
     category: "Birds",
     hp: 50,
     sparRoll: 2,
