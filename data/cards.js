@@ -74,7 +74,7 @@ const CHAMPIONS = [
     hp: 50,
     sparRoll: 2,
     sparAbility: "Fate favors the lowly! Below 25 HP, regain 10 HP otherwise deal 10 DP!",
-    image: "rising-pheonix.png"
+    image: "rising-phoenix.png"
   },
   {
     name: "Wise Owl",
@@ -266,7 +266,7 @@ const CHAMPIONS = [
     hp: 50,
     sparRoll: 1,
     sparAbility: "Chance favors the brave! Roll again! < 4 shield heals 10 HP else sword deals 10 DP.",
-    image: "shinning-knight.png"
+    image: "shining-knight.png"
   },
   {
     name: "Brilliant Knight",
