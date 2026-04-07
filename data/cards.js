@@ -564,7 +564,186 @@ const CHAMPIONS = [
 // ============================================================
 
 const SUPPORTERS = [
-  
+  {
+    name: "Dragon Fruit",
+    ability: "Heals your dragon by 30 HP points!",
+    appliesTo: "Dragons",
+    image: "dragon-fruit.png"
+  },
+  {
+    name: "Trade Route Map",
+    ability: "Pick a random card from your opponents hand and swap it if you wish!",
+    appliesTo: "all",
+    image: "trade-route-map.png"
+  },
+  {
+    name: "Obsidian Upgrade",
+    ability: "Add 5 points of healing to your Great Shield!",
+    appliesTo: "all",
+    image: "obsidian-upgrade.png"
+  },
+  {
+    name: "Healing Coin",
+    ability: "Absorbs all negative effects, no self damage!",
+    appliesTo: "all",
+    image: "healing-coin.png"
+  },
+  {
+    name: "Temple of Birds",
+    ability: "All bird monsters attack increases by 5!",
+    appliesTo: "Sky Riders",
+    image: "temple-of-birds.png"
+  },
+  {
+    name: "Improved Staff",
+    ability: "Heals wizards by 15 points!",
+    appliesTo: "Wizards",
+    image: "improved-staff.png"
+  },
+  {
+    name: "Metamorphosis",
+    ability: "Cards starting under 40 HP rise to 70!",
+    appliesTo: "all",
+    image: "metamorphosis.png"
+  },
+  {
+    name: "Magic Arrows",
+    ability: "Archer attack increases by 10 points.",
+    appliesTo: "Archers",
+    image: "magic-arrows.png"
+  },
+  {
+    name: "Healing Robe",
+    ability: "Wear your robe to heal you by 10 points.",
+    appliesTo: "Wizards",
+    image: "healing-robe.png"
+  },
+  {
+    name: "Monastery",
+    ability: "Increase monk DP by 15.",
+    appliesTo: "Monks",
+    image: "monastery.png"
+  },
+  {
+    name: "Elf Upgrade",
+    ability: "Increase elf's health by 20.",
+    appliesTo: "Elves",
+    image: "elf-upgrade.png"
+  },
+  {
+    name: "Knight Tools",
+    ability: "Increase knight's health or DP by 20.",
+    appliesTo: "Knights",
+    image: "knight-tools.png"
+  },
+  {
+    name: "Dragon Sword",
+    ability: "Increase dragon's attack by 20.",
+    appliesTo: "Dragons",
+    image: "dragon-sword.png"
+  },
+  {
+    name: "King's Blessing",
+    ability: "Increase knight's DP by 30.",
+    appliesTo: "Knights",
+    image: "kings-blessing.png"
+  },
+  {
+    name: "Good Condition",
+    ability: "Increase relic HP by 10.",
+    appliesTo: "all",
+    image: "good-condition.png"
+  },
+  {
+    name: "Underwater Temple",
+    ability: "Increase sea creatures attack by 25.",
+    appliesTo: "Sea Creatures",
+    image: "underwater-temple.png"
+  },
+  {
+    name: "Forest Magic",
+    ability: "Evade a turn if creature is a land animal.",
+    appliesTo: "Wild Beasts",
+    image: "forest-magic.png"
+  },
+  {
+    name: "Mystical Bow",
+    ability: "Increase archer's HP by 15.",
+    appliesTo: "Archers",
+    image: "mystical-bow.png"
+  },
+  {
+    name: "Meditation",
+    ability: "Increase monk HP by 20.",
+    appliesTo: "Monks",
+    image: "meditation.png"
+  },
+  {
+    name: "New Wand",
+    ability: "Increase wizards attack by 35.",
+    appliesTo: "Wizards",
+    image: "new-wand.png"
+  },
+  {
+    name: "Warm Waters",
+    ability: "Increase sea monsters HP by 20.",
+    appliesTo: "Sea Creatures",
+    image: "warm-waters.png"
+  },
+  {
+    name: "Tectonic Shift",
+    ability: "Increase land animals DP by 20.",
+    appliesTo: "Wild Beasts",
+    image: "tectonic-shift.png"
+  },
+  {
+    name: "Cloud Coverage",
+    ability: "All bird monsters evade 2 turns of damage.",
+    appliesTo: "Sky Riders",
+    image: "cloud-coverage.png"
+  },
+  {
+    name: "Elf Magic",
+    ability: "Increase elf's DP by 25.",
+    appliesTo: "Elves",
+    image: "elf-magic.png"
+  },
+  {
+    name: "Mangrove",
+    ability: "Heal sea and bird monsters by 30 HP.",
+    appliesTo: "Sea Creatures",
+    image: "mangrove.png"
+  },
+  {
+    name: "Kelp",
+    ability: "Opponent skips 3 turns.",
+    appliesTo: "all",
+    image: "kelp.png"
+  },
+  {
+    name: "Seaweed",
+    ability: "Heal 30 HP.",
+    appliesTo: "all",
+    image: "seaweed.png"
+  },
+  {
+    name: "Banyan",
+    ability: "Pick an extra card from the deck!!",
+    appliesTo: "all",
+    image: "banyan.png"
+  },
+  {
+    name: "Maple",
+    ability: "Opponent trapped, skips 1 turn. Heal yourself by 20 HP.",
+    appliesTo: "all",
+    image: "maple.png"
+  },
+  {
+    name: "Venus Fly Trap",
+    ability: "Opponent health reduced to 10 HP.",
+    appliesTo: "all",
+    image: "venus-fly-trap.png"
+  }
 ];
 
 // ============================================================
