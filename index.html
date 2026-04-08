@@ -70,6 +70,9 @@
     filter: drop-shadow(0 0 8px rgba(79,195,247,0.35));
     animation: heroFloat 4s ease-in-out infinite;
   }
+  . hero-img {
+    width:800px;
+  }
   @keyframes heroFloat { 0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);} } 
 
   /* ── TABS ── */
@@ -421,8 +424,10 @@
 </nav>
 
 <div class="hero">
-  <div class="hero-title">SPAR</div>
-  <div class="hero-sub">Champions</div>
+  <div class="hero-title">
+    <img class="hero-img" src="images/logo.png" alt="">
+  </div>
+ 
 </div>
 
 <!-- TABS -->
