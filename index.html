@@ -70,8 +70,8 @@
     filter: drop-shadow(0 0 8px rgba(79,195,247,0.35));
     animation: heroFloat 4s ease-in-out infinite;
   }
-  . hero-img {
-    width:800px;
+  .hero-img {
+    width:40%;
   }
   @keyframes heroFloat { 0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);} } 
 
@@ -580,11 +580,10 @@ function setFilter(cat){
 function cardBack(){
   return `<div class="flip-back"><div class="card-back-wrap">
     <div class="card-back-bg"></div>
-    <img class="card-back-frame-img" src="images/frame.png" alt="">
+    <img class="card-back-frame-img" src="images/supporter/frame.png" alt="">
     <div class="card-back-content">
       <div class="back-divider"></div>
       <div class="back-logo"><img class="back-logo-img" src="images/logo.png"></div>
-      <div class="back-sub">Champions</div>
       <div class="back-divider"></div>
       <div class="back-hint">tap to reveal</div>
     </div>
