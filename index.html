@@ -207,6 +207,15 @@
     z-index: 10;
   }
 
+  .card-supporter-frame-img {
+    position: absolute;
+    inset: -12% -13%;
+    width: 130%; height: 130%;
+    object-fit: fill;
+    pointer-events: none;
+    z-index: 10;
+  }
+
   /* 3. Text overlays — positioned to align with frame elements */
 
   /* Name — sits in the top banner area of the frame */
@@ -298,9 +307,9 @@
     background: repeating-linear-gradient(45deg, transparent, transparent 18px, rgba(240,165,0,0.02) 18px, rgba(240,165,0,0.02) 19px);
   }
   .card-back-frame-img {
-    position: absolute; inset: -14% -13%; width: 130%; height: 140%;
+    position: absolute; inset: -13% -13%; width: 130%; height: 130%;
     object-fit: fill; pointer-events: none; z-index: 10;
-    filter: saturate(0.3) brightness(0.7);
+    /*filter: saturate(0.3) brightness(0.7);*/
   }
   .card-back-content {
     position: absolute; inset: 0; z-index: 20;
@@ -323,7 +332,10 @@
     filter: drop-shadow(0 0 5px rgba(79,195,247,0.4));
   }
   .back-hint { font-family: 'Cinzel', serif; font-size: 0.46rem; letter-spacing: 0.14em; color: rgba(240,165,0,0.3); text-transform: uppercase; }
-
+  .back-logo-img {
+    width: 100%;
+    object-fit: contain;
+  }
   /* ══════════════════════════════════════
      RULES SECTION
   ══════════════════════════════════════ */
@@ -570,9 +582,8 @@ function cardBack(){
     <div class="card-back-bg"></div>
     <img class="card-back-frame-img" src="images/frame.png" alt="">
     <div class="card-back-content">
-      <div class="back-sword">⚔</div>
       <div class="back-divider"></div>
-      <div class="back-logo">SPAR</div>
+      <div class="back-logo"><img class="back-logo-img" src="images/logo.png"></div>
       <div class="back-sub">Champions</div>
       <div class="back-divider"></div>
       <div class="back-hint">tap to reveal</div>
@@ -637,7 +648,7 @@ function renderSupporters(){
                 ?`<img src="images/supporter/${s.image}" alt="${s.name}" onerror="this.outerHTML='<div class=card-character-placeholder>✨</div>'">`
                 :`<div class="card-character-placeholder">✨</div>`}
             </div>
-            <img class="card-frame-img" src="images/supporter/frame.png" alt="">
+            <img class="card-supporter-frame-img" src="images/supporter/frame.png" alt="">
             <div class="card-name">${s.name}</div>
             <!-- No HP heart or dice for supporters -->
             <div class="card-ability centered">${s.ability}</div>
