@@ -326,17 +326,17 @@ const CHAMPIONS = [
     name: "Mystic Lobster",
     category: "Sea Creatures",
     hp: 65,
-    sparRoll: 6,
-    sparAbility: "defend and attack deal 10DP and heal 20 HP",
-    image: "giant-sea-turtle.png"
+    sparRoll: 1,
+    sparAbility: "Defend and attack! Deal 10 DP and heal 20 HP!!",
+    image: "mystic-lobster.png"
   },
   {
     name: "Jiggly Jellyfish",
     category: "Sea Creatures",
     hp: 65,
-    sparRoll: 6,
-    sparAbility: "tentacles sting!deal 2 extra DP forever and deal 15 DP now",
-    image: "giant-sea-turtle.png"
+    sparRoll: 2,
+    sparAbility: "Tentacles sting! Deal 2 extra DP forever and deal 15 DP now!!",
+    image: "jiggly-jellyfish.png"
   },
   
 
