@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPAR Champions — Battle</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #f0a500; --gold-light: #ffd166; --gold-dark: #8b6914; --gold-mid: #c8860a;
+  --navy: #06090f; --navy2: #0a1628;
+  --blue: #4fc3f7; --red: #c0392b; --red2: #8b0000;
+  --p1: #1a4a9a; --p1l: #2a6adc; --p1bg: rgba(26,74,154,0.15);
+  --p2: #7a1a1a; --p2l: #c03030; --p2bg: rgba(122,26,26,0.15);
+  --green: #27ae60; --green2: #1a7a40;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--navy); color:#e8d5a3; font-family:'Crimson Text',serif; overflow-x:hidden; min-height:100vh; }
+
+/* ── NAV ── */
+nav {
+  position:sticky; top:0; z-index:200;
+  padding:0.7rem 2rem; display:flex; align-items:center; justify-content:space-between;
+  background:rgba(6,9,15,0.97); backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(240,165,0,0.18);
+}
+.nav-logo { font-family:'Cinzel Decorative',cursive; font-size:1rem; color:var(--gold); text-decoration:none; text-shadow:0 0 15px rgba(240,165,0,0.4); }
+.nav-back { font-family:'Cinzel',serif; font-size:0.75rem; color:#8a7a58; text-decoration:none; letter-spacing:0.1em; transition:color 0.2s; }
+.nav-back:hover { color:var(--gold-light); }
+
+/* ── SETUP SCREEN ── */
+#setupScreen {
+  min-height:90vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:2rem; text-align:center;
+  background:radial-gradient(ellipse 80% 60% at 50% 40%, rgba(26,111,181,0.1) 0%, transparent 70%);
+}
+.setup-title { font-family:'Cinzel Decorative',cursive; font-size:clamp(2rem,6vw,4rem); background:linear-gradient(180deg,#ffd166,#f0a500,#c8860a); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; filter:drop-shadow(0 0 25px rgba(240,165,0,0.4)); margin-bottom:0.3rem; }
+.setup-sub { font-family:'Cinzel',serif; font-size:clamp(0.8rem,2vw,1rem); color:var(--blue); letter-spacing:0.3em; margin-bottom:2.5rem; }
+
+.player-names { display:grid; grid-template-columns:1fr 1fr; gap:2rem; max-width:600px; width:100%; margin-bottom:2rem; }
+.player-input-wrap { display:flex; flex-direction:column; gap:0.5rem; }
+.player-label { font-family:'Cinzel',serif; font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; }
+.p1-label { color:var(--p1l); }
+.p2-label { color:var(--p2l); }
+.player-input {
+  font-family:'Cinzel',serif; font-size:0.9rem; letter-spacing:0.05em;
+  background:rgba(10,22,40,0.9); border:1px solid rgba(240,165,0,0.25);
+  color:var(--gold-light); padding:0.7rem 1rem; outline:none; border-radius:3px;
+  transition:border-color 0.3s; text-align:center;
+}
+.player-input:focus { border-color:var(--gold); }
+
+.deal-btn {
+  font-family:'Cinzel',serif; font-weight:700; font-size:1rem; letter-spacing:0.15em;
+  text-transform:uppercase; padding:1rem 3rem; border:none; cursor:pointer;
+  background:linear-gradient(135deg,#c8860a,#f0a500,#ffd166); color:#1a0a00;
+  clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);
+  box-shadow:0 0 30px rgba(240,165,0,0.4); transition:all 0.3s;
+  margin-bottom:1rem;
+}
+.deal-btn:hover { box-shadow:0 0 50px rgba(240,165,0,0.7); transform:translateY(-2px) scale(1.02); }
+
+.setup-rules {
+  max-width:700px; display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1rem; margin-top:1.5rem;
+}
+.setup-rule { background:rgba(10,22,40,0.7); border:1px solid rgba(240,165,0,0.15); border-left:3px solid var(--gold); padding:0.9rem 1rem; text-align:left; }
+.setup-rule-title { font-family:'Cinzel',serif; font-size:0.72rem; color:var(--gold); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:0.3rem; }
+.setup-rule-text { font-size:0.85rem; color:#7a8a6a; line-height:1.5; }
+
+/* ── BATTLE SCREEN ── */
+#battleScreen { display:none; padding:1rem; max-width:1400px; margin:0 auto; }
+
+/* Turn banner */
+.turn-banner {
+  text-align:center; padding:0.8rem; margin-bottom:1rem;
+  background:linear-gradient(135deg,rgba(10,22,40,0.95),rgba(6,9,15,0.98));
+  border:1px solid rgba(240,165,0,0.3); border-radius:4px;
+  position:relative; overflow:hidden;
+}
+.turn-banner::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at center,rgba(240,165,0,0.04),transparent); }
+.turn-text { font-family:'Cinzel Decorative',cursive; font-size:clamp(0.9rem,2.5vw,1.4rem); color:var(--gold); text-shadow:0 0 20px rgba(240,165,0,0.5); position:relative; z-index:1; }
+.turn-sub { font-family:'Cinzel',serif; font-size:0.72rem; color:#6a7a8a; letter-spacing:0.15em; margin-top:0.2rem; position:relative; z-index:1; }
+
+/* Main battle layout */
+.battle-layout { display:grid; grid-template-columns:1fr 220px 1fr; gap:1rem; align-items:start; }
+
+/* Player panels */
+.player-panel { display:flex; flex-direction:column; gap:0.8rem; }
+.panel-header {
+  padding:0.7rem 1rem; border-radius:3px; display:flex; justify-content:space-between; align-items:center;
+  border:1px solid; position:relative; overflow:hidden;
+}
+.p1-header { background:var(--p1bg); border-color:rgba(42,106,220,0.4); }
+.p2-header { background:var(--p2bg); border-color:rgba(192,48,48,0.4); }
+.panel-name { font-family:'Cinzel Decorative',cursive; font-size:clamp(0.8rem,1.8vw,1.1rem); }
+.p1-header .panel-name { color:#6aabff; }
+.p2-header .panel-name { color:#ff8080; }
+.panel-hp-bar-wrap { width:100%; }
+.panel-hp-label { font-family:'Cinzel',serif; font-size:0.65rem; color:#6a7a8a; letter-spacing:0.1em; }
+.panel-hp-bar { width:100%; height:8px; background:rgba(255,255,255,0.08); border-radius:4px; overflow:hidden; margin-top:2px; }
+.panel-hp-fill { height:100%; border-radius:4px; transition:width 0.5s ease; }
+.p1-fill { background:linear-gradient(90deg,#1a6fb5,#4fc3f7); }
+.p2-fill { background:linear-gradient(90deg,#8b0000,#e74c3c); }
+.panel-hp-num { font-family:'Cinzel',serif; font-size:0.8rem; font-weight:700; }
+.p1-header .panel-hp-num { color:#4fc3f7; }
+.p2-header .panel-hp-num { color:#ff8080; }
+
+/* Active card */
+.active-card-wrap { position:relative; }
+.active-label { font-family:'Cinzel',serif; font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; color:#5a6a7a; margin-bottom:0.4rem; }
+.battle-card {
+  width:100%; aspect-ratio:3/4; position:relative; border-radius:10px;
+  overflow:hidden; cursor:default;
+  box-shadow:0 8px 30px rgba(0,0,0,0.7);
+}
+.battle-card .bc-art { position:absolute; inset:0; }
+.battle-card .bc-art img { width:100%; height:100%; object-fit:cover; object-position:top; }
+.battle-card .bc-art-placeholder { width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:5rem; background:radial-gradient(ellipse at 50% 30%,rgba(20,40,80,0.9),#050a14); }
+.battle-card .bc-frame { position:absolute; inset:-13% -13%; width:130%; height:130%; object-fit:fill; pointer-events:none; z-index:10; }
+.battle-card .bc-name { position:absolute; top:7.5%; left:13%; right:24%; z-index:20; font-family:'Cinzel',serif; font-size:0.55rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#ddeaff; background:rgba(10,25,70,0.85); padding:0.2rem 0.4rem; border-radius:2px; }
+.battle-card .bc-hp { position:absolute; top:4.5%; right:7%; z-index:20; font-family:'Cinzel',serif; font-size:0.8rem; font-weight:700; color:white; text-shadow:0 1px 5px rgba(0,0,0,1); width:38px; height:38px; display:flex; align-items:center; justify-content:center; padding-top:3px; }
+.battle-card .bc-spar { position:absolute; bottom:17%; left:8%; z-index:20; font-family:'Cinzel',serif; font-size:0.9rem; font-weight:700; color:white; text-shadow:0 1px 5px rgba(0,0,0,1); width:44px; height:44px; display:flex; align-items:center; justify-content:center; }
+.battle-card .bc-ability { position:absolute; bottom:7%; left:30%; right:8%; z-index:20; font-family:'Cinzel',serif; font-size:0.45rem; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color:#f0e0a0; background:rgba(5,10,25,0.85); padding:0.25rem 0.35rem; border-radius:2px; text-align:center; line-height:1.5; }
+
+/* glow on active card */
+.card-glow-p1 { box-shadow:0 0 30px rgba(79,195,247,0.5), 0 8px 30px rgba(0,0,0,0.7); }
+.card-glow-p2 { box-shadow:0 0 30px rgba(231,76,60,0.5), 0 8px 30px rgba(0,0,0,0.7); }
+
+/* defeated overlay */
+.card-defeated::after { content:'💀 DEFEATED'; position:absolute; inset:0; background:rgba(0,0,0,0.75); display:flex; align-items:center; justify-content:center; font-family:'Cinzel Decorative',cursive; font-size:1rem; color:#ff4444; z-index:30; }
+
+/* Status tags */
+.status-tags { display:flex; flex-wrap:wrap; gap:0.3rem; min-height:24px; }
+.status-tag { font-family:'Cinzel',serif; font-size:0.58rem; letter-spacing:0.06em; padding:0.15rem 0.5rem; border-radius:10px; }
+.tag-buff { background:rgba(39,174,96,0.2); border:1px solid rgba(39,174,96,0.4); color:#5dcc8a; }
+.tag-debuff { background:rgba(192,57,43,0.2); border:1px solid rgba(192,57,43,0.4); color:#ff8a80; }
+.tag-neutral { background:rgba(79,195,247,0.12); border:1px solid rgba(79,195,247,0.3); color:var(--blue); }
+
+/* Hand */
+.hand-wrap { }
+.hand-label { font-family:'Cinzel',serif; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; color:#5a6a7a; margin-bottom:0.4rem; display:flex; justify-content:space-between; }
+.hand-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.4rem; }
+.hand-card {
+  aspect-ratio:3/4; position:relative; border-radius:6px; overflow:hidden;
+  cursor:pointer; transition:all 0.25s; border:2px solid transparent;
+}
+.hand-card:hover { transform:translateY(-4px); }
+.hand-card.selected-for-battle { border-color:var(--gold); box-shadow:0 0 14px rgba(240,165,0,0.5); }
+.hand-card.selected-for-supp { border-color:#5dcc8a; box-shadow:0 0 14px rgba(93,204,138,0.5); }
+.hand-card img { width:100%; height:100%; object-fit:cover; object-position:top; }
+.hand-card .hc-frame { position:absolute; inset:-13% -13%; width:130%; height:130%; object-fit:fill; pointer-events:none; z-index:10; }
+.hand-card .hc-name { position:absolute; top:6%; left:11%; right:20%; z-index:20; font-family:'Cinzel',serif; font-size:0.4rem; font-weight:700; text-transform:uppercase; color:#ddeaff; background:rgba(10,25,70,0.85); padding:0.15rem 0.3rem; border-radius:2px; letter-spacing:0.06em; }
+.hand-card .hc-hp { position:absolute; top:3.5%; right:5.5%; z-index:20; font-family:'Cinzel',serif; font-size:0.55rem; font-weight:700; color:white; text-shadow:0 1px 4px rgba(0,0,0,1); width:28px; height:28px; display:flex; align-items:center; justify-content:center; }
+.hand-card .hc-spar { position:absolute; bottom:18%; left:6%; z-index:20; font-family:'Cinzel',serif; font-size:0.65rem; font-weight:700; color:white; text-shadow:0 1px 4px rgba(0,0,0,1); width:32px; height:32px; display:flex; align-items:center; justify-content:center; }
+.hand-card .hc-placeholder { width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:2.5rem; background:radial-gradient(ellipse at 50% 30%,rgba(20,40,80,0.9),#050a14); }
+
+/* Supporter hand cards (no frame, simpler) */
+.supp-hand-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.4rem; }
+.supp-card {
+  aspect-ratio:3/4; position:relative; border-radius:6px; overflow:hidden;
+  cursor:pointer; transition:all 0.25s; border:2px solid rgba(240,165,0,0.2);
+  background:rgba(10,22,40,0.9);
+}
+.supp-card:hover { transform:translateY(-4px); border-color:var(--gold); }
+.supp-card.selected-for-supp { border-color:#5dcc8a; box-shadow:0 0 14px rgba(93,204,138,0.5); }
+.supp-card img { width:100%; height:55%; object-fit:cover; }
+.supp-card .sc-placeholder { width:100%; height:55%; display:flex; align-items:center; justify-content:center; font-size:2rem; background:rgba(6,9,15,0.8); }
+.supp-card .sc-name { font-family:'Cinzel',serif; font-size:0.42rem; font-weight:700; text-transform:uppercase; color:var(--gold-light); letter-spacing:0.06em; padding:0.2rem 0.3rem; border-top:1px solid rgba(240,165,0,0.2); }
+.supp-card .sc-ability { font-family:'Cinzel',serif; font-size:0.38rem; color:#8a9aaa; padding:0 0.3rem 0.2rem; line-height:1.4; }
+.supp-card .sc-applies { font-family:'Cinzel',serif; font-size:0.38rem; color:var(--gold); padding:0 0.3rem 0.2rem; }
+
+/* Discard pile */
+.discard-label { font-family:'Cinzel',serif; font-size:0.6rem; color:#3a4a5a; letter-spacing:0.1em; text-transform:uppercase; margin-top:0.5rem; }
+
+/* ── CENTER COLUMN ── */
+.center-col { display:flex; flex-direction:column; align-items:center; gap:0.8rem; }
+
+/* Dice */
+.dice-wrap { text-align:center; }
+.dice-btn {
+  width:72px; height:72px; background:linear-gradient(135deg,#c0392b,#8b0000);
+  border-radius:12px; display:inline-flex; align-items:center; justify-content:center;
+  font-size:2.2rem; cursor:pointer; border:none;
+  box-shadow:0 5px 0 #5a0000, 0 7px 16px rgba(0,0,0,0.7), 0 0 22px rgba(192,57,43,0.35), inset 0 1px 2px rgba(255,140,120,0.2);
+  transition:all 0.15s; user-select:none; color:white;
+}
+.dice-btn:disabled { opacity:0.4; cursor:not-allowed; transform:none !important; box-shadow:none; }
+.dice-btn:not(:disabled):active { transform:translateY(4px); box-shadow:0 2px 0 #5a0000, 0 4px 8px rgba(0,0,0,0.7); }
+.dice-btn.rolling { animation:diceRoll 0.55s ease; }
+@keyframes diceRoll { 0%{transform:rotate(0)scale(1);}20%{transform:rotate(-14deg)scale(1.1);}40%{transform:rotate(18deg)scale(0.92);}60%{transform:rotate(-9deg)scale(1.05);}80%{transform:rotate(7deg)scale(0.97);}100%{transform:rotate(0)scale(1);} }
+.dice-result { font-family:'Cinzel',serif; font-size:1.1rem; color:var(--gold-light); min-height:1.5em; margin-top:0.4rem; }
+.dice-spar { font-family:'Cinzel',serif; font-size:0.65rem; color:#ff9999; letter-spacing:0.08em; min-height:1em; }
+
+/* Action buttons */
+.action-btn {
+  width:100%; font-family:'Cinzel',serif; font-weight:700; font-size:0.72rem; letter-spacing:0.1em;
+  text-transform:uppercase; padding:0.6rem; border:none; cursor:pointer;
+  transition:all 0.25s; border-radius:3px;
+}
+.btn-play-supp { background:rgba(39,174,96,0.15); border:1px solid rgba(39,174,96,0.4); color:#5dcc8a; }
+.btn-play-supp:hover:not(:disabled) { background:rgba(39,174,96,0.3); box-shadow:0 0 15px rgba(39,174,96,0.25); }
+.btn-confirm-supp { background:linear-gradient(135deg,#1a7a40,#27ae60); color:white; }
+.btn-confirm-supp:hover:not(:disabled) { box-shadow:0 0 18px rgba(39,174,96,0.4); }
+.btn-skip-supp { background:rgba(100,100,100,0.15); border:1px solid rgba(100,100,100,0.3); color:#6a7a8a; }
+.btn-skip-supp:hover:not(:disabled) { background:rgba(100,100,100,0.25); }
+.btn-end-turn { background:linear-gradient(135deg,var(--gold-dark),var(--gold),var(--gold-light)); color:#1a0a00; font-size:0.8rem; }
+.btn-end-turn:hover:not(:disabled) { box-shadow:0 0 22px rgba(240,165,0,0.5); transform:scale(1.02); }
+.action-btn:disabled { opacity:0.35; cursor:not-allowed; }
+
+/* Battle log */
+.battle-log {
+  width:100%; background:rgba(6,9,15,0.95); border:1px solid rgba(240,165,0,0.15);
+  border-radius:3px; padding:0.6rem; max-height:220px; overflow-y:auto;
+}
+.battle-log::-webkit-scrollbar { width:4px; }
+.battle-log::-webkit-scrollbar-thumb { background:rgba(240,165,0,0.3); border-radius:2px; }
+.log-entry { font-family:'Crimson Text',serif; font-size:0.85rem; color:#8a9a8a; line-height:1.5; padding:0.1rem 0; border-bottom:1px solid rgba(255,255,255,0.03); }
+.log-entry.log-spar { color:#ff9999; }
+.log-entry.log-damage { color:#ff8a80; }
+.log-entry.log-heal { color:#5dcc8a; }
+.log-entry.log-supp { color:var(--gold-light); }
+.log-entry.log-system { color:var(--blue); font-style:italic; }
+.log-entry.log-win { color:var(--gold); font-family:'Cinzel Decorative',cursive; font-size:0.9rem; }
+
+/* Round counter */
+.round-badge { font-family:'Cinzel',serif; font-size:0.7rem; color:#5a6a7a; letter-spacing:0.15em; text-transform:uppercase; }
+
+/* Win screen */
+#winScreen {
+  display:none; position:fixed; inset:0; z-index:500;
+  background:rgba(6,9,15,0.95); backdrop-filter:blur(10px);
+  flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:2rem;
+}
+.win-title { font-family:'Cinzel Decorative',cursive; font-size:clamp(2rem,6vw,4rem); background:linear-gradient(180deg,#ffd166,#f0a500,#c8860a); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; filter:drop-shadow(0 0 30px rgba(240,165,0,0.5)); margin-bottom:0.5rem; }
+.win-sub { font-family:'Cinzel',serif; font-size:clamp(0.9rem,2.5vw,1.3rem); color:var(--blue); letter-spacing:0.3em; margin-bottom:2rem; }
+.win-trophy { font-size:5rem; margin-bottom:1rem; animation:trophyBounce 1s ease infinite; }
+@keyframes trophyBounce { 0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);} }
+.win-name { font-family:'Cinzel Decorative',cursive; font-size:clamp(1.5rem,4vw,2.5rem); color:var(--gold); text-shadow:0 0 30px rgba(240,165,0,0.6); margin-bottom:2rem; }
+.win-btn { font-family:'Cinzel',serif; font-weight:700; font-size:0.9rem; letter-spacing:0.15em; text-transform:uppercase; padding:0.9rem 2.5rem; border:none; cursor:pointer; background:linear-gradient(135deg,#c8860a,#f0a500,#ffd166); color:#1a0a00; clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%); box-shadow:0 0 25px rgba(240,165,0,0.4); transition:all 0.3s; margin:0.4rem; }
+.win-btn:hover { box-shadow:0 0 45px rgba(240,165,0,0.7); transform:translateY(-2px); }
+.win-btn-sec { background:transparent; color:var(--gold-light); border:1px solid var(--gold-dark); clip-path:none; }
+
+/* Supporter selection modal */
+#suppModal {
+  display:none; position:fixed; inset:0; z-index:400;
+  background:rgba(0,0,0,0.8); backdrop-filter:blur(4px);
+  align-items:center; justify-content:center; padding:1rem;
+}
+.supp-modal-box {
+  background:linear-gradient(160deg,#0a1628,#06090f);
+  border:1px solid rgba(240,165,0,0.3); border-radius:6px;
+  padding:1.5rem; max-width:500px; width:100%; max-height:80vh; overflow-y:auto;
+}
+.supp-modal-title { font-family:'Cinzel Decorative',cursive; font-size:1.1rem; color:var(--gold); margin-bottom:0.3rem; }
+.supp-modal-sub { font-family:'Cinzel',serif; font-size:0.72rem; color:#6a7a8a; letter-spacing:0.1em; margin-bottom:1rem; }
+.supp-modal-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:0.8rem; margin-bottom:1rem; }
+.supp-modal-card {
+  border-radius:5px; overflow:hidden; cursor:pointer;
+  border:2px solid rgba(240,165,0,0.2); background:rgba(10,22,40,0.9);
+  transition:all 0.25s;
+}
+.supp-modal-card:hover { border-color:var(--gold); transform:translateY(-2px); }
+.supp-modal-card.chosen { border-color:#5dcc8a; box-shadow:0 0 12px rgba(93,204,138,0.4); }
+.supp-modal-card img { width:100%; aspect-ratio:1; object-fit:cover; }
+.supp-modal-card .smc-placeholder { width:100%; aspect-ratio:1; display:flex; align-items:center; justify-content:center; font-size:2rem; background:rgba(6,9,15,0.8); }
+.supp-modal-card .smc-name { font-family:'Cinzel',serif; font-size:0.52rem; font-weight:700; text-transform:uppercase; color:var(--gold-light); padding:0.25rem 0.4rem; letter-spacing:0.06em; }
+.supp-modal-card .smc-text { font-size:0.55rem; color:#7a8a9a; padding:0 0.4rem 0.3rem; line-height:1.4; }
+.supp-modal-btns { display:flex; gap:0.5rem; }
+
+/* Confetti */
+.confetti-piece { position:fixed; width:10px; height:10px; border-radius:2px; animation:confettiFall linear forwards; z-index:600; pointer-events:none; }
+@keyframes confettiFall { 0%{transform:translateY(-20px) rotate(0deg);opacity:1;} 100%{transform:translateY(100vh) rotate(720deg);opacity:0;} }
+
+/* Responsive */
+@media(max-width:900px) {
+  .battle-layout { grid-template-columns:1fr; }
+  .center-col { flex-direction:row; flex-wrap:wrap; justify-content:center; }
+  .battle-log { max-height:160px; }
+  #p2Panel { order:-1; }
+}
+@media(max-width:500px) {
+  .hand-grid,.supp-hand-grid { grid-template-columns:repeat(2,1fr); }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">⚔ SPAR Champions</a>
+  <a href="index.html" class="nav-back">← Back to Cards</a>
+</nav>
+
+<!-- SETUP -->
+<div id="setupScreen">
+  <div class="setup-title">Battle Arena</div>
+  <div class="setup-sub">⚔ 2 Player Mode ⚔</div>
+
+  <div class="player-names">
+    <div class="player-input-wrap">
+      <label class="player-label p1-label">⚔ Player 1</label>
+      <input class="player-input" id="p1name" placeholder="Enter name..." value="Player 1" maxlength="16">
+    </div>
+    <div class="player-input-wrap">
+      <label class="player-label p2-label">🔥 Player 2</label>
+      <input class="player-input" id="p2name" placeholder="Enter name..." value="Player 2" maxlength="16">
+    </div>
+  </div>
+
+  <button class="deal-btn" onclick="startBattle()">⚔ Deal Cards & Start Battle</button>
+
+  <div class="setup-rules">
+    <div class="setup-rule"><div class="setup-rule-title">🃏 Dealing</div><div class="setup-rule-text">Each player gets 6 random Battle cards and 3 Supporter cards from the full deck.</div></div>
+    <div class="setup-rule"><div class="setup-rule-title">🎲 Turn Order</div><div class="setup-rule-text">Both players roll — highest goes first. Turns alternate each round.</div></div>
+    <div class="setup-rule"><div class="setup-rule-title">⚡ SPAR</div><div class="setup-rule-text">Roll your champion's SPAR number and their special ability activates!</div></div>
+    <div class="setup-rule"><div class="setup-rule-title">✨ Supporters</div><div class="setup-rule-text">Play a Supporter card before rolling to boost your champion. Single use!</div></div>
+    <div class="setup-rule"><div class="setup-rule-title">💀 Defeat</div><div class="setup-rule-text">When HP hits 0, card is discarded. Play your next card or lose!</div></div>
+    <div class="setup-rule"><div class="setup-rule-title">🏆 Victory</div><div class="setup-rule-text">Last team with cards standing wins the battle!</div></div>
+  </div>
+</div>
+
+<!-- BATTLE -->
+<div id="battleScreen">
+  <div class="turn-banner">
+    <div class="turn-text" id="turnText">Loading...</div>
+    <div class="turn-sub" id="turnSub"></div>
+  </div>
+
+  <div class="battle-layout">
+    <!-- P1 Panel -->
+    <div class="player-panel" id="p1Panel">
+      <div class="panel-header p1-header">
+        <div>
+          <div class="panel-name" id="p1displayName">Player 1</div>
+          <div class="panel-hp-label">CARDS REMAINING: <span id="p1CardCount">6</span></div>
+        </div>
+        <div style="text-align:right;">
+          <div class="panel-hp-num" id="p1hpNum">65 HP</div>
+          <div class="panel-hp-bar-wrap">
+            <div class="panel-hp-bar"><div class="panel-hp-fill p1-fill" id="p1hpBar" style="width:100%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="active-card-wrap">
+        <div class="active-label">⚔ Active Champion</div>
+        <div class="battle-card card-glow-p1" id="p1ActiveCard"></div>
+        <div class="status-tags" id="p1Status" style="margin-top:0.4rem;"></div>
+      </div>
+
+      <div>
+        <div class="hand-label">
+          <span>Hand <span id="p1HandCount">5</span> cards</span>
+          <span style="font-size:0.6rem;color:#3a4a5a;">click to select next</span>
+        </div>
+        <div class="hand-grid" id="p1Hand"></div>
+      </div>
+
+      <div>
+        <div class="hand-label"><span>✨ Supporters <span id="p1SuppCount">3</span></span></div>
+        <div class="supp-hand-grid" id="p1SuppHand"></div>
+      </div>
+
+      <div class="discard-label">Discard pile: <span id="p1DiscardCount">0</span> cards</div>
+    </div>
+
+    <!-- CENTER -->
+    <div class="center-col">
+      <div class="round-badge">Round <span id="roundNum">1</span></div>
+
+      <div class="dice-wrap">
+        <button class="dice-btn" id="diceBtn" onclick="rollDice()">🎲</button>
+        <div class="dice-result" id="diceResult">—</div>
+        <div class="dice-spar" id="diceSpar"></div>
+      </div>
+
+      <button class="action-btn btn-play-supp" id="suppBtn" onclick="openSuppModal()">✨ Play Supporter</button>
+      <button class="action-btn btn-end-turn" id="endTurnBtn" onclick="endTurn()" style="display:none;">Next Turn →</button>
+
+      <div class="battle-log" id="battleLog">
+        <div class="log-entry log-system">Battle starting...</div>
+      </div>
+    </div>
+
+    <!-- P2 Panel -->
+    <div class="player-panel" id="p2Panel">
+      <div class="panel-header p2-header">
+        <div>
+          <div class="panel-name" id="p2displayName">Player 2</div>
+          <div class="panel-hp-label">CARDS REMAINING: <span id="p2CardCount">6</span></div>
+        </div>
+        <div style="text-align:right;">
+          <div class="panel-hp-num" id="p2hpNum">65 HP</div>
+          <div class="panel-hp-bar-wrap">
+            <div class="panel-hp-bar"><div class="panel-hp-fill p2-fill" id="p2hpBar" style="width:100%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="active-card-wrap">
+        <div class="active-label">🔥 Active Champion</div>
+        <div class="battle-card card-glow-p2" id="p2ActiveCard"></div>
+        <div class="status-tags" id="p2Status" style="margin-top:0.4rem;"></div>
+      </div>
+
+      <div>
+        <div class="hand-label">
+          <span>Hand <span id="p2HandCount">5</span> cards</span>
+          <span style="font-size:0.6rem;color:#3a4a5a;">click to select next</span>
+        </div>
+        <div class="hand-grid" id="p2Hand"></div>
+      </div>
+
+      <div>
+        <div class="hand-label"><span>✨ Supporters <span id="p2SuppCount">3</span></span></div>
+        <div class="supp-hand-grid" id="p2SuppHand"></div>
+      </div>
+
+      <div class="discard-label">Discard pile: <span id="p2DiscardCount">0</span> cards</div>
+    </div>
+  </div>
+</div>
+
+<!-- WIN SCREEN -->
+<div id="winScreen">
+  <div class="win-trophy">🏆</div>
+  <div class="win-title">Victory!</div>
+  <div class="win-name" id="winName">Player 1</div>
+  <div class="win-sub">Champion of SPAR</div>
+  <button class="win-btn" onclick="restartBattle()">⚔ Play Again</button>
+  <button class="win-btn win-btn-sec" onclick="goSetup()">← New Players</button>
+</div>
+
+<!-- SUPPORTER MODAL -->
+<div id="suppModal">
+  <div class="supp-modal-box">
+    <div class="supp-modal-title">✨ Play a Supporter</div>
+    <div class="supp-modal-sub" id="suppModalSub">Choose a supporter card to play this turn</div>
+    <div class="supp-modal-grid" id="suppModalGrid"></div>
+    <div class="supp-modal-btns">
+      <button class="action-btn btn-confirm-supp" onclick="confirmSupporter()">✓ Play Selected</button>
+      <button class="action-btn btn-skip-supp" onclick="closeSuppModal()">✕ Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script src="data/cards.js"></script>
+<script>
+// ════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════
+const CAT_EMOJI = {"Wizards":"🧙","Sky Riders":"🦅","Wild Beasts":"🐾","Sea Creatures":"🌊","Archers":"🏹","Knights":"⚔️","Elves":"🌿","Monks":"🥋","Insects":"🐛","Dragons":"🐉"};
+const getCE = c => CAT_EMOJI[c] || "⚡";
+
+let G = {}; // game state
+let selectedSuppCard = null;
+
+// ════════════════════════════════════════════
+//  SETUP
+// ════════════════════════════════════════════
+function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+
+function deepClone(cards) {
+  return cards.map(c => ({...c, currentHp: c.hp, maxHp: c.hp, effects: []}));
+}
+
+function startBattle() {
+  const p1n = document.getElementById('p1name').value.trim() || 'Player 1';
+  const p2n = document.getElementById('p2name').value.trim() || 'Player 2';
+
+  const champDeck = shuffle(deepClone(CHAMPIONS));
+  const suppDeck  = shuffle([...SUPPORTERS]);
+
+  // Deal 6 champ cards + 3 supporter cards each
+  const p1Champs = champDeck.slice(0, 6);
+  const p2Champs = champDeck.slice(6, 12);
+  const p1Supps  = suppDeck.slice(0, 3);
+  const p2Supps  = suppDeck.slice(3, 6);
+
+  G = {
+    p1: { name: p1n, hand: p1Champs.slice(1), active: p1Champs[0], supps: p1Supps, discard: [], effects: [] },
+    p2: { name: p2n, hand: p2Champs.slice(1), active: p2Champs[0], supps: p2Supps, discard: [], effects: [] },
+    turn: null, // determined by opening roll
+    phase: 'opening', // opening | choose-supp | roll | rolled | end
+    round: 1,
+    rolled: false,
+    suppPlayed: false,
+    selectedNextCard: { p1: null, p2: null },
+  };
+
+  document.getElementById('setupScreen').style.display = 'none';
+  document.getElementById('battleScreen').style.display = 'block';
+  document.getElementById('p1displayName').textContent = p1n;
+  document.getElementById('p2displayName').textContent = p2n;
+
+  log(`⚔ ${p1n} vs ${p2n} — Battle begins!`, 'system');
+  log(`Both players rolled to determine first turn...`, 'system');
+
+  // Opening roll to determine who goes first
+  const r1 = Math.floor(Math.random()*6)+1;
+  const r2 = Math.floor(Math.random()*6)+1;
+  log(`${p1n} rolled ${r1} · ${p2n} rolled ${r2}`, 'system');
+
+  if (r1 >= r2) {
+    G.turn = 'p1';
+    log(`${p1n} goes first!`, 'system');
+  } else {
+    G.turn = 'p2';
+    log(`${p2n} goes first!`, 'system');
+  }
+
+  G.phase = 'choose-supp';
+  renderAll();
+  updateTurnBanner();
+}
+
+// ════════════════════════════════════════════
+//  RENDERING
+// ════════════════════════════════════════════
+function renderAll() {
+  renderActiveCard('p1');
+  renderActiveCard('p2');
+  renderHand('p1');
+  renderHand('p2');
+  renderSuppHand('p1');
+  renderSuppHand('p2');
+  updateHpBars();
+  updateCounts();
+  updateButtons();
+}
+
+function cardFrontHTML(card, size='normal') {
+  const img = card.image
+    ? `<img src="images/champions/${card.image}" alt="${card.name}" onerror="this.outerHTML='<div class=\\"${size==='small'?'hc':'bc'}-placeholder\\">${getCE(card.category)}</div>'">`
+    : `<div class="${size==='small'?'hc':'bc'}-placeholder">${getCE(card.category)}</div>`;
+  const pfx = size==='small' ? 'hc' : 'bc';
+  return `
+    ${img}
+    <img class="${pfx}-frame" src="images/frame.png" alt="">
+    <div class="${pfx}-name">${card.name}</div>
+    <div class="${pfx}-hp">${card.currentHp}</div>
+    ${card.sparRoll ? `<div class="${pfx}-spar">${card.sparRoll}</div>` : ''}
+    ${size==='normal' ? `<div class="${pfx}-ability">${card.sparAbility||''}</div>` : ''}
+  `;
+}
+
+function renderActiveCard(p) {
+  const el = document.getElementById(`${p}ActiveCard`);
+  const card = G[p].active;
+  if (!card) { el.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;font-family:Cinzel,serif;font-size:0.8rem;color:#3a4a5a;">No cards remaining</div>'; return; }
+  const defeated = card.currentHp <= 0;
+  el.innerHTML = cardFrontHTML(card, 'normal');
+  el.className = `battle-card card-glow-${p} ${defeated?'card-defeated':''}`;
+
+  // Status effects
+  const statusEl = document.getElementById(`${p}Status`);
+  statusEl.innerHTML = G[p].effects.map(e =>
+    `<span class="status-tag ${e.type==='buff'?'tag-buff':e.type==='debuff'?'tag-debuff':'tag-neutral'}">${e.label}</span>`
+  ).join('');
+}
+
+function renderHand(p) {
+  const grid = document.getElementById(`${p}Hand`);
+  const isActive = G.turn === p;
+  grid.innerHTML = G[p].hand.map((card,i) => {
+    const sel = G.selectedNextCard[p] === i;
+    return `<div class="hand-card ${sel?'selected-for-battle':''}" onclick="selectNextCard('${p}',${i})" title="${card.name}">
+      ${card.image ? `<img src="images/champions/${card.image}" alt="${card.name}" onerror="this.outerHTML='<div class=hc-placeholder>${getCE(card.category)}</div>'">` : `<div class="hc-placeholder">${getCE(card.category)}</div>`}
+      <img class="hc-frame" src="images/frame.png" alt="">
+      <div class="hc-name">${card.name}</div>
+      <div class="hc-hp">${card.currentHp}</div>
+      ${card.sparRoll?`<div class="hc-spar">${card.sparRoll}</div>`:''}
+    </div>`;
+  }).join('') || '<div style="font-family:Cinzel,serif;font-size:0.65rem;color:#3a4a5a;padding:0.5rem;">No cards in hand</div>';
+  document.getElementById(`${p}HandCount`).textContent = G[p].hand.length;
+}
+
+function renderSuppHand(p) {
+  const grid = document.getElementById(`${p}SuppHand`);
+  grid.innerHTML = G[p].supps.map((s,i) => {
+    return `<div class="supp-card" title="${s.name}: ${s.ability}">
+      ${s.image ? `<img src="images/supporters/${s.image}" alt="${s.name}" onerror="this.outerHTML='<div class=sc-placeholder>✨</div>'">` : `<div class="sc-placeholder">✨</div>`}
+      <div class="sc-name">${s.name}</div>
+      <div class="sc-ability">${s.ability}</div>
+      <div class="sc-applies">${s.appliesTo==='all'?'🌐 All':'🎯 '+s.appliesTo}</div>
+    </div>`;
+  }).join('') || '<div style="font-family:Cinzel,serif;font-size:0.65rem;color:#3a4a5a;padding:0.5rem;">No supporters</div>';
+  document.getElementById(`${p}SuppCount`).textContent = G[p].supps.length;
+}
+
+function updateHpBars() {
+  ['p1','p2'].forEach(p => {
+    const card = G[p].active;
+    if (!card) return;
+    const pct = Math.max(0, Math.min(100, (card.currentHp / card.maxHp)*100));
+    document.getElementById(`${p}hpBar`).style.width = pct+'%';
+    document.getElementById(`${p}hpNum`).textContent = `${Math.max(0,card.currentHp)} HP`;
+    // Change color when low
+    const fill = document.getElementById(`${p}hpBar`);
+    if (pct < 25) fill.style.background = p==='p1'?'linear-gradient(90deg,#8b0000,#e74c3c)':'linear-gradient(90deg,#8b0000,#e74c3c)';
+  });
+}
+
+function updateCounts() {
+  ['p1','p2'].forEach(p => {
+    document.getElementById(`${p}CardCount`).textContent = G[p].hand.length + (G[p].active ? 1 : 0);
+    document.getElementById(`${p}DiscardCount`).textContent = G[p].discard.length;
+  });
+}
+
+function updateButtons() {
+  const isMyTurn = G.turn !== null;
+  const canSupp = G.phase === 'choose-supp' && !G.suppPlayed;
+  const canRoll = G.phase === 'choose-supp' || G.phase === 'roll';
+  const showEnd = G.phase === 'rolled';
+
+  const diceBtn = document.getElementById('diceBtn');
+  const suppBtn = document.getElementById('suppBtn');
+  const endBtn  = document.getElementById('endTurnBtn');
+
+  diceBtn.disabled = !canRoll || G.rolled;
+  suppBtn.disabled = !canSupp;
+  suppBtn.style.display = canSupp ? '' : 'none';
+  endBtn.style.display  = showEnd ? '' : 'none';
+}
+
+function updateTurnBanner() {
+  const p = G.turn;
+  if (!p) return;
+  const name = G[p].name;
+  const card = G[p].active;
+  document.getElementById('turnText').textContent = `${name}'s Turn`;
+  document.getElementById('turnSub').textContent = card
+    ? `Active: ${card.name} · ${card.currentHp} HP · SPAR on roll ${card.sparRoll}`
+    : 'No active card';
+  document.getElementById('roundNum').textContent = G.round;
+}
+
+// ════════════════════════════════════════════
+//  GAME LOGIC
+// ════════════════════════════════════════════
+function selectNextCard(p, idx) {
+  // Allow selecting which hand card to bring in as next active
+  if (G[p].active && G[p].active.currentHp > 0) {
+    log(`${G[p].name}: Select your NEXT card when your active is defeated.`, 'system');
+    return;
+  }
+  G.selectedNextCard[p] = idx;
+  renderHand(p);
+}
+
+function rollDice() {
+  if (G.rolled || (G.phase !== 'choose-supp' && G.phase !== 'roll')) return;
+
+  const diceBtn = document.getElementById('diceBtn');
+  diceBtn.classList.remove('rolling');
+  void diceBtn.offsetWidth;
+  diceBtn.classList.add('rolling');
+
+  const faces = ['⚀','⚁','⚂','⚃','⚄','⚅'];
+  let ticks = 0;
+  const iv = setInterval(() => {
+    diceBtn.textContent = faces[Math.floor(Math.random()*6)];
+    ticks++;
+    if (ticks > 12) {
+      clearInterval(iv);
+      const roll = Math.floor(Math.random()*6)+1;
+      diceBtn.textContent = faces[roll-1];
+      processRoll(roll);
+    }
+  }, 55);
+}
+
+function processRoll(roll) {
+  const p = G.turn;
+  const opp = p==='p1'?'p2':'p1';
+  const attacker = G[p].active;
+  const defender = G[opp].active;
+
+  document.getElementById('diceResult').textContent = `Rolled ${roll}!`;
+  document.getElementById('diceSpar').textContent = '';
+  G.rolled = true;
+  G.phase = 'rolled';
+
+  if (!attacker || !defender) { updateButtons(); return; }
+
+  // Check attacker weakness debuff
+  let dmg = roll;
+  const weakEff = G[p].effects.find(e => e.key === 'weakened');
+  if (weakEff) { dmg = Math.max(1, dmg - weakEff.value); }
+
+  // Check dodge
+  const dodgeEff = G[p].effects.find(e => e.key === 'dodge');
+  if (dodgeEff) {
+    log(`${attacker.name} is dodging — cannot be harmed this turn!`, 'buff');
+  }
+
+  // Check if SPAR
+  if (roll === attacker.sparRoll) {
+    document.getElementById('diceSpar').textContent = `⚡ SPAR ACTIVATED!`;
+    log(`⚡ SPAR! ${attacker.name} activates: ${attacker.sparAbility}`, 'spar');
+    applySpar(p, opp, attacker, defender, roll);
+  } else {
+    // Normal damage to opponent's active
+    const oppDodge = G[opp].effects.find(e => e.key === 'dodge');
+    if (oppDodge) {
+      log(`${defender.name} dodged the attack!`, 'buff');
+    } else {
+      // Check opponent's attack reduction
+      const oppWeaken = G[opp].effects.find(e => e.key === 'weakened');
+      applyDamage(opp, dmg);
+      log(`${attacker.name} deals ${dmg} damage to ${defender.name}!`, 'damage');
+    }
+  }
+
+  // Tick effects (reduce duration)
+  tickEffects(p);
+  tickEffects(opp);
+
+  updateButtons();
+  renderAll();
+  checkDefeated();
+}
+
+function applyDamage(target, amount) {
+  const card = G[target].active;
+  if (!card) return;
+  card.currentHp = Math.max(0, card.currentHp - amount);
+}
+
+function applyHeal(target, amount) {
+  const card = G[target].active;
+  if (!card) return;
+  card.currentHp = Math.min(card.maxHp, card.currentHp + amount);
+  log(`${card.name} healed for ${amount} HP! (${card.currentHp} HP)`, 'heal');
+}
+
+function addEffect(p, effect) {
+  // effect: { key, label, type, duration, value? }
+  G[p].effects = G[p].effects.filter(e => e.key !== effect.key);
+  G[p].effects.push(effect);
+}
+
+function tickEffects(p) {
+  G[p].effects = G[p].effects.map(e => ({...e, duration: e.duration - 1})).filter(e => e.duration > 0);
+}
+
+function applySpar(p, opp, attacker, defender, roll) {
+  // Parse the SPAR ability text and apply logical effects
+  const ab = attacker.sparAbility.toLowerCase();
+
+  if (ab.includes('weakened by 2 forever') || ab.includes('weaken') && ab.includes('forever')) {
+    addEffect(opp, {key:'weakened', label:'⬇ Weakened -2', type:'debuff', duration:999, value:2});
+    log(`${defender.name}'s attack weakened by 2 — permanently!`, 'debuff');
+
+  } else if (ab.includes('turns of 10 dp') || (ab.includes('10') && ab.includes('2 turns'))) {
+    const turns = 2;
+    addEffect(opp, {key:'burn', label:`🔥 Burning x${turns}`, type:'debuff', duration:turns, value:10});
+    applyDamage(opp, 10);
+    log(`${defender.name} takes 10 DP now and for ${turns} more turns!`, 'damage');
+
+  } else if (ab.includes('deal 10 dp or heal 10 hp')) {
+    // Player chooses — auto: heal if below 50% else attack
+    if (attacker.currentHp < attacker.maxHp * 0.5) {
+      applyHeal(p, 10);
+    } else {
+      applyDamage(opp, 10);
+      log(`${attacker.name} chose to deal 10 DP!`, 'damage');
+    }
+
+  } else if (ab.includes('dodge') && ab.includes('turn')) {
+    const turns = parseInt(ab.match(/(\d+) turn/)?.[1]) || 2;
+    addEffect(p, {key:'dodge', label:`🛡 Dodge x${turns}`, type:'buff', duration:turns});
+    log(`${attacker.name} will dodge for ${turns} turns!`, 'buff');
+
+  } else if (ab.includes('30 damage') || ab.includes('30 dp')) {
+    applyDamage(opp, 30);
+    log(`${attacker.name} unleashes 30 DAMAGE!!!`, 'damage');
+
+  } else if (ab.includes('35 dp') || ab.includes('deal 35')) {
+    applyDamage(opp, 35);
+    log(`${attacker.name} deals 35 DP!`, 'damage');
+
+  } else if (ab.includes('20 dp') || ab.includes('deal 20')) {
+    applyDamage(opp, 20);
+    log(`${attacker.name} deals 20 DP!`, 'damage');
+
+  } else if (ab.includes('half opponent') || ab.includes('half your')) {
+    const half = Math.floor(defender.currentHp / 2);
+    applyDamage(opp, half);
+    log(`${attacker.name} halves ${defender.name}'s HP! (${half} damage)`, 'damage');
+
+  } else if (ab.includes('heal 20 hp') || ab.includes('heal 20')) {
+    applyHeal(p, 20);
+
+  } else if (ab.includes('heal 25 hp') || ab.includes('heal 25')) {
+    applyHeal(p, 25);
+
+  } else if (ab.includes('threefold') || ab.includes('triple')) {
+    const dmg = roll * 3;
+    applyDamage(opp, dmg);
+    log(`${attacker.name} deals ${dmg} DP (${roll} × 3)!`, 'damage');
+
+  } else if (ab.includes('multiply roll by 3')) {
+    const dmg = roll * 3;
+    applyDamage(opp, dmg);
+    addEffect(opp, {key:'skip', label:'⏭ Skips Turn', type:'debuff', duration:1});
+    log(`${attacker.name} deals ${dmg} DP and ${defender.name} skips next turn!`, 'damage');
+
+  } else if (ab.includes('skip') && ab.includes('turn')) {
+    addEffect(opp, {key:'skip', label:'⏭ Skips Turn', type:'debuff', duration:1});
+    log(`${defender.name} must skip their next turn!`, 'debuff');
+
+  } else if (ab.includes('roll again') && ab.includes('add')) {
+    const bonus = parseInt(ab.match(/add (\d+)/)?.[1]) || 4;
+    const reroll = Math.floor(Math.random()*6)+1;
+    const dmg = reroll + bonus;
+    applyDamage(opp, dmg);
+    log(`${attacker.name} rolls again: ${reroll} + ${bonus} = ${dmg} DP!`, 'damage');
+
+  } else if (ab.includes('roll twice') && ab.includes('multiply')) {
+    const r1 = Math.floor(Math.random()*6)+1;
+    const r2 = Math.floor(Math.random()*6)+1;
+    applyDamage(opp, r1*r2);
+    log(`${attacker.name} rolls ${r1} × ${r2} = ${r1*r2} DP!`, 'damage');
+
+  } else if (ab.includes('double your total self hp')) {
+    const bonus = attacker.currentHp;
+    applyHeal(p, bonus);
+    log(`${attacker.name} doubles HP! +${bonus} HP!`, 'heal');
+
+  } else if (ab.includes('swap hp')) {
+    const myHp = attacker.currentHp;
+    const oppHp = defender.currentHp;
+    attacker.currentHp = Math.min(attacker.maxHp, oppHp);
+    defender.currentHp = Math.min(defender.maxHp, myHp);
+    log(`${attacker.name} swaps HP with ${defender.name}!`, 'buff');
+
+  } else if (ab.includes('attack increased') && ab.includes('forever')) {
+    addEffect(p, {key:'attack_up', label:'⬆ Attack +1 Forever', type:'buff', duration:999, value:1});
+    const dmg = roll + 1;
+    applyDamage(opp, dmg);
+    log(`${attacker.name} permanently gains +1 attack! Deals ${dmg} DP!`, 'buff');
+
+  } else if (ab.includes('increase attack by 15')) {
+    addEffect(p, {key:'attack_boost', label:'🔥 +15 Attack x2', type:'buff', duration:2, value:15});
+    log(`${attacker.name} gains +15 attack for 2 turns!`, 'buff');
+
+  } else {
+    // Fallback: deal roll value as damage
+    applyDamage(opp, roll);
+    log(`${attacker.name} SPAR: deals ${roll} DP!`, 'damage');
+  }
+}
+
+function checkDefeated() {
+  ['p1','p2'].forEach(p => {
+    const opp = p==='p1'?'p2':'p1';
+    const card = G[p].active;
+    if (card && card.currentHp <= 0) {
+      log(`💀 ${card.name} is defeated!`, 'system');
+      G[p].discard.push(card);
+
+      // Auto-bring in next card
+      if (G.selectedNextCard[p] !== null && G[p].hand[G.selectedNextCard[p]]) {
+        const nextIdx = G.selectedNextCard[p];
+        G[p].active = G[p].hand.splice(nextIdx, 1)[0];
+        G.selectedNextCard[p] = null;
+        log(`${G[p].name} sends in ${G[p].active.name}!`, 'system');
+      } else if (G[p].hand.length > 0) {
+        G[p].active = G[p].hand.shift();
+        log(`${G[p].name} sends in ${G[p].active.name}!`, 'system');
+      } else {
+        G[p].active = null;
+        log(`${G[p].name} has no cards left!`, 'system');
+        setTimeout(() => endGame(opp), 800);
+        return;
+      }
+      renderAll();
+      updateTurnBanner();
+    }
+  });
+}
+
+function endTurn() {
+  const p = G.turn;
+  const opp = p==='p1'?'p2':'p1';
+
+  // Apply burn effects to opponent at end of turn
+  const burnEff = G[opp].effects.find(e => e.key==='burn');
+  if (burnEff) {
+    applyDamage(opp, burnEff.value);
+    log(`🔥 ${G[opp].active?.name} takes ${burnEff.value} burn damage!`, 'damage');
+    renderAll();
+    checkDefeated();
+  }
+
+  // Switch turn
+  G.turn = opp;
+  G.rolled = false;
+  G.suppPlayed = false;
+  G.phase = 'choose-supp';
+
+  // Check skip
+  const skipEff = G[opp].effects.find(e => e.key==='skip');
+  if (skipEff) {
+    log(`${G[opp].name}'s turn is skipped!`, 'debuff');
+    G[opp].effects = G[opp].effects.filter(e => e.key !== 'skip');
+    G.turn = p;
+    G.round++;
+  } else {
+    G.round++;
+  }
+
+  document.getElementById('diceResult').textContent = '—';
+  document.getElementById('diceSpar').textContent = '';
+  updateTurnBanner();
+  renderAll();
+}
+
+// ════════════════════════════════════════════
+//  SUPPORTER MODAL
+// ════════════════════════════════════════════
+function openSuppModal() {
+  const p = G.turn;
+  const supps = G[p].supps;
+  if (!supps.length) { log('No supporter cards!', 'system'); return; }
+
+  document.getElementById('suppModalSub').textContent = `${G[p].name} — choose a supporter card to play`;
+  selectedSuppCard = null;
+
+  const grid = document.getElementById('suppModalGrid');
+  grid.innerHTML = supps.map((s,i) => `
+    <div class="supp-modal-card" id="smc_${i}" onclick="selectSuppModal(${i})">
+      ${s.image ? `<img src="images/supporters/${s.image}" alt="${s.name}" onerror="this.outerHTML='<div class=smc-placeholder>✨</div>'">` : `<div class="smc-placeholder">✨</div>`}
+      <div class="smc-name">${s.name}</div>
+      <div class="smc-text">${s.ability}</div>
+      <div class="smc-text" style="color:var(--gold);">🎯 ${s.appliesTo==='all'?'All champions':s.appliesTo}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('suppModal').style.display = 'flex';
+}
+
+function selectSuppModal(idx) {
+  selectedSuppCard = idx;
+  document.querySelectorAll('.supp-modal-card').forEach((el,i) => el.classList.toggle('chosen', i===idx));
+}
+
+function confirmSupporter() {
+  if (selectedSuppCard === null) { alert('Please select a supporter card first!'); return; }
+  const p = G.turn;
+  const opp = p==='p1'?'p2':'p1';
+  const s = G[p].supps[selectedSuppCard];
+  const attacker = G[p].active;
+  const defender = G[opp].active;
+
+  log(`✨ ${G[p].name} plays ${s.name}: ${s.ability}`, 'supp');
+
+  // Apply supporter effect
+  const ab = s.ability.toLowerCase();
+  const appTo = s.appliesTo.toLowerCase();
+  const cardCat = attacker?.category?.toLowerCase() || '';
+
+  // Check if applicable
+  const applicable = s.appliesTo === 'all'
+    || cardCat.includes(appTo)
+    || appTo.includes(cardCat)
+    || (attacker && attacker.name.toLowerCase().includes(appTo));
+
+  if (!applicable) {
+    log(`⚠ ${s.name} doesn't apply to ${attacker?.name || 'this card'}!`, 'system');
+  } else {
+    if (ab.includes('heal') && !ab.includes('opponent')) {
+      const amt = parseInt(ab.match(/(\d+) hp/)?.[1]) || 10;
+      applyHeal(p, amt);
+    } else if (ab.includes('attack increases by') || ab.includes('increase') && ab.includes('attack')) {
+      const amt = parseInt(ab.match(/(\d+) point/)?.[1] || ab.match(/by (\d+)/)?.[1]) || 10;
+      addEffect(p, {key:'attack_boost', label:`⬆ +${amt} Attack`, type:'buff', duration:3, value:amt});
+      log(`${attacker?.name}'s attack boosted by ${amt}!`, 'buff');
+    } else if (ab.includes('hp by') || ab.includes('health by')) {
+      const amt = parseInt(ab.match(/by (\d+)/)?.[1]) || 10;
+      if (attacker) { attacker.maxHp += amt; attacker.currentHp = Math.min(attacker.currentHp + amt, attacker.maxHp); }
+      log(`${attacker?.name} gains ${amt} max HP!`, 'heal');
+    } else if (ab.includes('dp by') || ab.includes('attack by')) {
+      const amt = parseInt(ab.match(/by (\d+)/)?.[1]) || 10;
+      addEffect(p, {key:'dp_boost', label:`⬆ +${amt} DP`, type:'buff', duration:3, value:amt});
+      log(`${attacker?.name}'s DP boosted by ${amt}!`, 'buff');
+    } else if (ab.includes('skips')) {
+      addEffect(opp, {key:'skip', label:'⏭ Skips Turn', type:'debuff', duration:1});
+      log(`${defender?.name} will skip their next turn!`, 'debuff');
+    } else if (ab.includes('evade')) {
+      const turns = parseInt(ab.match(/(\d+) turn/)?.[1]) || 1;
+      addEffect(p, {key:'dodge', label:`🛡 Dodge x${turns}`, type:'buff', duration:turns});
+    } else if (ab.includes('reduced to 10 hp')) {
+      if (defender) { defender.currentHp = 10; }
+      log(`${defender?.name}'s HP reduced to 10!`, 'debuff');
+    } else if (ab.includes('pick an extra card')) {
+      log(`${G[p].name} picks an extra card from the deck!`, 'buff');
+      // No deck in digital version, skip
+    } else {
+      log(`Effect applied!`, 'buff');
+    }
+  }
+
+  // Remove supporter from hand
+  G[p].supps.splice(selectedSuppCard, 1);
+  G.suppPlayed = true;
+  G.phase = 'roll';
+  closeSuppModal();
+  renderAll();
+  checkDefeated();
+}
+
+function closeSuppModal() {
+  document.getElementById('suppModal').style.display = 'none';
+  selectedSuppCard = null;
+}
+
+// ════════════════════════════════════════════
+//  WIN
+// ════════════════════════════════════════════
+function endGame(winner) {
+  const name = G[winner].name;
+  document.getElementById('winName').textContent = name;
+  document.getElementById('winScreen').style.display = 'flex';
+  log(`🏆 ${name} wins the battle!`, 'win');
+  spawnConfetti();
+}
+
+function spawnConfetti() {
+  const colors = ['#f0a500','#ffd166','#4fc3f7','#e74c3c','#27ae60','#ffffff'];
+  for (let i = 0; i < 80; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'confetti-piece';
+      el.style.cssText = `left:${Math.random()*100}vw;background:${colors[Math.floor(Math.random()*colors.length)]};width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;animation-duration:${2+Math.random()*2}s;animation-delay:0s;border-radius:${Math.random()>0.5?'50%':'2px'}`;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 4000);
+    }, i * 40);
+  }
+}
+
+function restartBattle() {
+  document.getElementById('winScreen').style.display = 'none';
+  startBattle();
+}
+
+function goSetup() {
+  document.getElementById('winScreen').style.display = 'none';
+  document.getElementById('battleScreen').style.display = 'none';
+  document.getElementById('setupScreen').style.display = 'flex';
+}
+
+// ════════════════════════════════════════════
+//  LOG
+// ════════════════════════════════════════════
+function log(msg, type='') {
+  const log = document.getElementById('battleLog');
+  const el = document.createElement('div');
+  el.className = `log-entry ${type?'log-'+type:''}`;
+  el.textContent = msg;
+  log.appendChild(el);
+  log.scrollTop = log.scrollHeight;
+}
+</script>
+</body>
+</html>
