@@ -127,7 +127,7 @@ const CHAMPIONS = [
     name: "Wooden Dragon",
     category: "Dragons",
     hp: 60,
-    sparRoll: 1,
+    sparRoll: 3,
     sparAbility: "Wood splinters! Deal 15 DP and attack increased by 3 forever",
     image: "wooden-dragon.png"
   },
@@ -135,7 +135,7 @@ const CHAMPIONS = [
     name: "Golden Dragon",
     category: "Dragons",
     hp: 50,
-    sparRoll: 2,
+    sparRoll: 4,
     sparAbility: "Golden Power! Deal wahatever HP you have to your opponent!",
     image: "golden-dragon.png"
   },
@@ -165,12 +165,12 @@ const CHAMPIONS = [
     image: "wise-owl.png"
   },
   {
-    name: "Soaring Pegasus",
+    name: "Soaring Raven",
     category: "Birds",
     hp: 50,
     sparRoll: 4,
-    sparAbility: "Soar or Charge! Evade opponents next DP or deal 10 DP!",
-    image: "soaring-pegasus.png"
+    sparAbility: "Soar or Attack! Evade opponents next DP or deal 10 DP!",
+    image: "soaring-raven.png"
   },
   {
     name: "Ancient Pterosaur",
@@ -188,6 +188,24 @@ const CHAMPIONS = [
     sparAbility: "Run! Kick! Roll again: < 3 deal 5 DP, < 6 deal 10 DP, = 6 deal 15 DP!",
     image: "cryptic-ostrich.png"
   },
+  {
+    name: "Electric Eagle",
+    category: "Birds",
+    hp: 40,
+    sparRoll: 5,
+    sparAbility: "Lightning strikes and Burns! Increase DP by 5 for 3 turns",
+    image: "electric-eagle.png"
+  },
+  {
+    name: "Rouge Robin",
+    category: "Birds",
+    hp: 40,
+    sparRoll: 6,
+    sparAbility: "Treachery occurs ! Deal 5 extra damage for each supporter card opponent has!!",
+    image: "cryptic-ostrich.png"
+  },
+
+
 
   // ── WILD BEASTS ──────────────────────────────────────────
   {
@@ -237,6 +255,22 @@ const CHAMPIONS = [
     sparRoll: 6,
     sparAbility: "Ooo ooo aaa eeeee! Multiply roll by 3 and opponent skips a turn!",
     image: "playful-monkey.png"
+  },
+  {
+    name: "Vicious Wolf",
+    category: "Wild Beasts",
+    hp: 55,
+    sparRoll: 1,
+    sparAbility: "Claws strikes! Deal 40 DP!",
+    image: "vicious-wolf.png"
+  },
+  {
+    name: "Stealth Stallion",
+    category: "Wild Beasts",
+    hp: 65,
+    sparRoll: 2,
+    sparAbility: "Stealth mode!! Dodge opponents attacks for 3 turns!",
+    image: "stealth-stallion.png"
   },
 
   // ── SEA CREATURES ────────────────────────────────────────
