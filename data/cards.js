@@ -58,6 +58,22 @@ const CHAMPIONS = [
     sparAbility: "Reek havoc wizard! 30 damage!!!",
     image: "wizard-of-havoc.png"
   },
+  {
+    name: "Wizard of Nature",
+    category: "Wizards",
+    hp: 60,
+    sparRoll: 1,
+    sparAbility: "Nature nurtres you! 20 self healing!!!",
+    image: "wizard-of-nature.png"
+  },
+  {
+    name: "Wizard of Metal",
+    category: "Wizards",
+    hp: 75,
+    sparRoll: 2,
+    sparAbility: "In 5 turns heal 35 HP!!!",
+    image: "wizard-of-metal.png"
+  },
  // ── DRAGONS ──────────────────────────────────────────────
   {
     name: "Dreadful Dragon",
