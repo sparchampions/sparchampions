@@ -136,7 +136,7 @@ const CHAMPIONS = [
     category: "Dragons",
     hp: 50,
     sparRoll: 2,
-    sparAbility: "Deal wahatever HP you have to your opponent",
+    sparAbility: "Golden Power! Deal wahatever HP you have to your opponent!",
     image: "golden-dragon.png"
   },
   // ── BIRDS ───────────────────────────────────────────
