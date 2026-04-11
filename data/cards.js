@@ -2,7 +2,7 @@
 //  SPAR CHAMPIONS — CARD DATA
 //  To add a new champion: copy any entry and edit
 //  Image filename must match file in images/champions/ or images/supporters/
-//  Categories: "Wizards" | "Sky Riders" | "Wild Beasts" | "Sea Creatures"
+//  Categories: "Wizards" | "Birds" | "Wild Beasts" | "Sea Creatures"
 //              | "Archers" | "Knights" | "Elves" | "Monks" | "Insects" 
 //              | "Relics" | "Dragons"
 // ============================================================
@@ -58,7 +58,55 @@ const CHAMPIONS = [
     sparAbility: "Reek havoc wizard! 30 damage!!!",
     image: "wizard-of-havoc.png"
   },
-
+ // ── DRAGONS ──────────────────────────────────────────────
+  {
+    name: "Dreadful Dragon",
+    category: "Dragons",
+    hp: 60,
+    sparRoll: 3,
+    sparAbility: "Withering Curse! Opponent loses SPAR ability!",
+    image: "dreadful-dragon.png"
+  },
+  {
+    name: "Icy Dragon",
+    category: "Dragons",
+    hp: 60,
+    sparRoll: 3,
+    sparAbility: "Frozen stiff! Opponent skips three turns!",
+    image: "icy-dragon.png"
+  },
+  {
+    name: "Blazing Dragon",
+    category: "Dragons",
+    hp: 60,
+    sparRoll: 3,
+    sparAbility: "A raging firestorm engulfs! Suffer 6 DP for 2 turns!",
+    image: "blazing-dragon.png"
+  },
+  {
+    name: "Wishful Dragon",
+    category: "Dragons",
+    hp: 45,
+    sparRoll: 2,
+    sparAbility: "Dragon Magic! Double your total self HP!",
+    image: "wishful-dragon.png"
+  },
+  {
+    name: "Magical Dragon",
+    category: "Dragons",
+    hp: 50,
+    sparRoll: 6,
+    sparAbility: "Fortune favors you! Roll anew & deal triple DP!",
+    image: "magical-dragon.png"
+  },
+  {
+    name: "Whimsical Dragon",
+    category: "Dragons",
+    hp: 50,
+    sparRoll: 4,
+    sparAbility: "A puff of warm magic! 5 DP to opponent, 5 self HP!",
+    image: "whimsical-dragon.png"
+  },
   // ── BIRDS ───────────────────────────────────────────
   {
     name: "Magical Falcon",
@@ -506,55 +554,6 @@ const CHAMPIONS = [
     sparRoll: 6,
     sparAbility: "Ancient magic flows! Add 5 more DP for the next 5 turns!",
     image: "mythical-compass.png"
-  },
-  // ── DRAGONS ──────────────────────────────────────────────
-  {
-    name: "Dreadful Dragon",
-    category: "Dragons",
-    hp: 60,
-    sparRoll: 3,
-    sparAbility: "Withering Curse! Opponent loses SPAR ability!",
-    image: "dreadful-dragon.png"
-  },
-  {
-    name: "Icy Dragon",
-    category: "Dragons",
-    hp: 60,
-    sparRoll: 3,
-    sparAbility: "Frozen stiff! Opponent skips three turns!",
-    image: "icy-dragon.png"
-  },
-  {
-    name: "Blazing Dragon",
-    category: "Dragons",
-    hp: 60,
-    sparRoll: 3,
-    sparAbility: "A raging firestorm engulfs! Suffer 6 DP for 2 turns!",
-    image: "blazing-dragon.png"
-  },
-  {
-    name: "Wishful Dragon",
-    category: "Dragons",
-    hp: 45,
-    sparRoll: 2,
-    sparAbility: "Dragon Magic! Double your total self HP!",
-    image: "wishful-dragon.png"
-  },
-  {
-    name: "Magical Dragon",
-    category: "Dragons",
-    hp: 50,
-    sparRoll: 6,
-    sparAbility: "Fortune favors you! Roll anew & deal triple DP!",
-    image: "magical-dragon.png"
-  },
-  {
-    name: "Whimsical Dragon",
-    category: "Dragons",
-    hp: 50,
-    sparRoll: 4,
-    sparAbility: "A puff of warm magic! 5 DP to opponent, 5 self HP!",
-    image: "whimsical-dragon.png"
   }
 
 ];
@@ -752,7 +751,7 @@ const SUPPORTERS = [
 const CATEGORIES = [
   "Wizards",
   "Dragons",
-  "Sky Riders",
+  "Birds",
   "Wild Beasts",
   "Sea Creatures",
   "Archers",
