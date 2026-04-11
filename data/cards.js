@@ -71,7 +71,7 @@ const CHAMPIONS = [
     category: "Wizards",
     hp: 75,
     sparRoll: 2,
-    sparAbility: "In 5 turns heal 35 HP!!!",
+    sparAbility: "Healing machine in progress! In 5 turns heal 35 HP!!!",
     image: "wizard-of-metal.png"
   },
  // ── DRAGONS ──────────────────────────────────────────────
