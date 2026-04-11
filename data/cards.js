@@ -123,6 +123,22 @@ const CHAMPIONS = [
     sparAbility: "A puff of warm magic! 5 DP to opponent, 5 self HP!",
     image: "whimsical-dragon.png"
   },
+  {
+    name: "Wooden Dragon",
+    category: "Dragons",
+    hp: 60,
+    sparRoll: 1,
+    sparAbility: "Wood splinters! Deal 15 DP and attack increased by 3 forever",
+    image: "wooden-dragon.png"
+  },
+  {
+    name: "Golden Dragon",
+    category: "Dragons",
+    hp: 50,
+    sparRoll: 2,
+    sparAbility: "Deal wahatever HP you have to your opponent",
+    image: "golden-dragon.png"
+  },
   // ── BIRDS ───────────────────────────────────────────
   {
     name: "Magical Falcon",
