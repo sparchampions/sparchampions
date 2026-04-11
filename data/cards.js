@@ -197,12 +197,12 @@ const CHAMPIONS = [
     image: "electric-eagle.png"
   },
   {
-    name: "Rouge Robin",
+    name: "Rogue Robin",
     category: "Birds",
     hp: 40,
     sparRoll: 6,
     sparAbility: "Treachery occurs ! Deal 5 extra damage for each supporter card opponent has!!",
-    image: "cryptic-ostrich.png"
+    image: "rogue-robin.png"
   },
 
 
