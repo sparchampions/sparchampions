@@ -751,6 +751,7 @@ const SUPPORTERS = [
 // ============================================================
 const CATEGORIES = [
   "Wizards",
+  "Dragons",
   "Sky Riders",
   "Wild Beasts",
   "Sea Creatures",
@@ -759,6 +760,5 @@ const CATEGORIES = [
   "Elves",
   "Monks",
   "Insects",
-  "Relics",
-  "Dragons"
+  "Relics"
 ];
