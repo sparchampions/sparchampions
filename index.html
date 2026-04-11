@@ -47,6 +47,15 @@
     letter-spacing: 0.08em;
   }
   .nav-count { font-family: 'Cinzel', serif; font-size: 0.72rem; color: #5a6a7a; letter-spacing: 0.1em; }
+  .nav-battle {
+    font-family: 'Cinzel', serif; font-size: 0.75rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 0.45rem 1.2rem; text-decoration: none;
+    background: linear-gradient(135deg, #c8860a, #f0a500, #ffd166); color: #1a0a00;
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+    box-shadow: 0 0 18px rgba(240,165,0,0.35); transition: all 0.3s;
+  }
+  .nav-battle:hover { box-shadow: 0 0 30px rgba(240,165,0,0.6); transform: translateY(-1px); }
 
   /* ── HERO ── */
   .hero {
@@ -429,6 +438,11 @@
 <body>
 
 <canvas id="particles"></canvas>
+<nav>
+  <a href="#" class="nav-logo">⚔ SPAR Champions</a>
+  <span class="nav-count" id="navCount"></span>
+  <a href="battle.html" class="nav-battle">⚔ Battle</a>
+</nav>
 
 <nav>
   <a href="#" class="nav-logo">⚔ SPAR Champions</a>
