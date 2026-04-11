@@ -322,6 +322,24 @@ const CHAMPIONS = [
     sparAbility: "Hard Shell!! Opponents attack weakened by 1 forever!",
     image: "giant-sea-turtle.png"
   },
+   {
+    name: "Mystic Lobster",
+    category: "Sea Creatures",
+    hp: 65,
+    sparRoll: 6,
+    sparAbility: "defend and attack deal 10DP and heal 20 HP",
+    image: "giant-sea-turtle.png"
+  },
+  {
+    name: "Jiggly Jellyfish",
+    category: "Sea Creatures",
+    hp: 65,
+    sparRoll: 6,
+    sparAbility: "tentacles sting!deal 2 extra DP forever and deal 15 DP now",
+    image: "giant-sea-turtle.png"
+  },
+  
+
 
   // ── ARCHERS ──────────────────────────────────────────────
   {
