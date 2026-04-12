@@ -390,6 +390,22 @@ const CHAMPIONS = [
     sparAbility: "Slow poison! Increase attack by 1 forever!",
     image: "archer-of-poison.png"
   },
+   {
+    name: "Archer of Darkness",
+    category: "Archers",
+    hp: 75,
+    sparRoll: 3,
+    sparAbility: "Opponent blinded! Decrease opponents attack by 2 forever!",
+    image: "archer-of-darkness.png"
+  },
+   {
+    name: "Archer of life",
+    category: "Archers",
+    hp: 50,
+    sparRoll: 6,
+    sparAbility: "New life! Go to starting hp!!!",
+    image: "archer-of-life.png"
+  },
 
   // ── KNIGHTS ──────────────────────────────────────────────
   {
