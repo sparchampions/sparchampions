@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>SPAR Champions — Score Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:#f0a500; --gold-l:#ffd166; --gold-d:#8b6914; --gold-m:#c8860a;
+  --navy:#06090f; --navy2:#0a1628;
+  --blue:#4fc3f7; --red:#c0392b; --green:#27ae60;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;}
+body{background:var(--navy);color:#e8d5a3;font-family:'Crimson Text',serif;min-height:100vh;overflow-x:hidden;}
+#particles{position:fixed;inset:0;pointer-events:none;z-index:0;}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:200;padding:0.65rem 1.2rem;display:flex;align-items:center;justify-content:space-between;gap:0.5rem;background:rgba(6,9,15,0.97);backdrop-filter:blur(10px);border-bottom:1px solid rgba(240,165,0,0.18);flex-wrap:wrap;}
+.nav-logo{font-family:'Cinzel Decorative',cursive;font-size:0.95rem;color:var(--gold);text-decoration:none;text-shadow:0 0 15px rgba(240,165,0,0.35);letter-spacing:0.06em;}
+.nav-links{display:flex;gap:0.4rem;align-items:center;}
+.nav-a{font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.35rem 0.8rem;border:1px solid rgba(240,165,0,0.22);color:#8a7a58;text-decoration:none;background:transparent;cursor:pointer;transition:all 0.2s;border-radius:2px;}
+.nav-a:hover{border-color:var(--gold);color:var(--gold-l);background:rgba(240,165,0,0.07);}
+
+/* SETUP */
+#setupScreen{position:relative;z-index:1;min-height:88vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1rem;text-align:center;background:radial-gradient(ellipse 70% 50% at 50% 40%,rgba(26,111,181,0.1) 0%,transparent 70%);}
+.setup-title{font-family:'Cinzel Decorative',cursive;font-size:clamp(2rem,7vw,3.5rem);background:linear-gradient(180deg,#ffd166,#f0a500,#c8860a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 22px rgba(240,165,0,0.35));line-height:1.1;margin-bottom:0.2rem;}
+.setup-sub{font-family:'Cinzel',serif;font-size:0.85rem;color:var(--blue);letter-spacing:0.3em;margin-bottom:2rem;}
+.setup-box{background:rgba(10,22,40,0.85);border:1px solid rgba(240,165,0,0.2);border-radius:6px;padding:1.5rem 1.8rem;width:min(400px,92vw);margin-bottom:1rem;}
+.setup-row{display:flex;align-items:center;gap:1rem;margin-bottom:1.1rem;}
+.setup-row:last-child{margin-bottom:0;}
+.setup-label{font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.1em;color:#8a7a58;min-width:85px;text-align:left;}
+.setup-slider{flex:1;}
+.setup-val{font-family:'Cinzel Decorative',cursive;font-size:1.15rem;color:var(--gold-l);min-width:34px;text-align:center;}
+.start-btn{width:100%;margin-top:1.1rem;padding:0.85rem;font-family:'Cinzel',serif;font-size:0.9rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;background:linear-gradient(135deg,#c8860a,#f0a500,#ffd166);color:#1a0a00;border:none;cursor:pointer;clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);box-shadow:0 0 24px rgba(240,165,0,0.35);transition:all 0.25s;}
+.start-btn:hover{box-shadow:0 0 40px rgba(240,165,0,0.6);transform:translateY(-2px);}
+
+/* TRACKER WRAPPER */
+#tracker{display:none;position:relative;z-index:1;min-height:88vh;display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding:1rem;}
+
+/* SCORE CARD */
+.score-card{width:min(420px,98vw);background:rgba(10,22,40,0.92);border:1px solid rgba(240,165,0,0.25);border-radius:8px;overflow:hidden;}
+
+/* round strip */
+.round-strip{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0.9rem;background:rgba(6,9,15,0.7);border-bottom:1px solid rgba(240,165,0,0.12);}
+.round-label{font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:#4a5a6a;}
+.round-num{font-family:'Cinzel Decorative',cursive;font-size:1rem;color:var(--gold-l);}
+.strip-btn{font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.28rem 0.75rem;border:1px solid rgba(240,165,0,0.25);background:transparent;color:#8a7a58;cursor:pointer;border-radius:2px;transition:all 0.2s;}
+.strip-btn:hover{border-color:var(--gold);color:var(--gold-l);background:rgba(240,165,0,0.08);}
+.strip-btn.gold-btn{background:linear-gradient(135deg,#c8860a,#f0a500,#ffd166);color:#1a0a00;border:none;clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);box-shadow:0 0 10px rgba(240,165,0,0.25);}
+.strip-btn.gold-btn:hover{box-shadow:0 0 20px rgba(240,165,0,0.5);transform:translateY(-1px);}
+
+/* champion + supporter row */
+.cards-row{display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid rgba(240,165,0,0.12);}
+.card-slot{padding:0.65rem 0.75rem;cursor:pointer;transition:background 0.2s;border-right:1px solid rgba(240,165,0,0.1);}
+.card-slot:last-child{border-right:none;}
+.card-slot:hover{background:rgba(240,165,0,0.04);}
+.slot-label{font-family:'Cinzel',serif;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:#4a5a6a;margin-bottom:0.35rem;}
+
+/* mini card with actual frame */
+.mini-card{position:relative;width:100%;aspect-ratio:3/4;border-radius:5px;overflow:hidden;background:rgba(6,9,15,0.8);}
+.mini-card img.card-art{width:100%;height:100%;object-fit:cover;object-position:top center;display:block;}
+.mini-card .card-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:rgba(6,9,15,0.9);}
+.mini-card img.card-frame{position:absolute;inset:-13% -13%;width:130%;height:130%;object-fit:fill;pointer-events:none;z-index:10;}
+.mini-card .mc-name{position:absolute;top:7%;left:12%;right:22%;z-index:20;font-family:'Cinzel',serif;font-size:0.38rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#ddeaff;background:rgba(10,25,70,0.85);padding:0.15rem 0.3rem;border-radius:2px;}
+.mini-card .mc-hp{position:absolute;top:4%;right:6%;z-index:20;font-family:'Cinzel',serif;font-size:0.55rem;font-weight:700;color:white;text-shadow:0 1px 4px rgba(0,0,0,1);width:26px;height:26px;display:flex;align-items:center;justify-content:center;}
+.mini-card .mc-spar{position:absolute;bottom:18%;left:7%;z-index:20;font-family:'Cinzel',serif;font-size:0.65rem;font-weight:700;color:white;text-shadow:0 1px 4px rgba(0,0,0,1);width:30px;height:30px;display:flex;align-items:center;justify-content:center;}
+.mini-card .mc-ability{position:absolute;bottom:6%;left:28%;right:7%;z-index:20;font-family:'Cinzel',serif;font-size:0.35rem;font-weight:600;text-transform:uppercase;color:#f0e0a0;background:rgba(5,10,25,0.85);padding:0.18rem 0.3rem;border-radius:2px;text-align:center;line-height:1.4;}
+.mini-card .mc-ability.centered{left:7%;}
+.card-slot-empty{width:100%;aspect-ratio:3/4;border:1px dashed rgba(240,165,0,0.2);border-radius:5px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.3rem;color:#3a4a5a;font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;transition:all 0.2s;}
+.card-slot:hover .card-slot-empty{border-color:rgba(240,165,0,0.4);color:#6a7a8a;}
+.slot-name{font-family:'Cinzel',serif;font-size:0.62rem;color:var(--gold-l);margin-top:0.3rem;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
+
+/* HP DRUM */
+.hp-section{padding:0.7rem 0.9rem;border-bottom:1px solid rgba(240,165,0,0.12);}
+.hp-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;}
+.hp-label{font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:#4a5a6a;}
+.hp-big-num{font-family:'Cinzel Decorative',cursive;font-size:1.4rem;color:var(--gold-l);}
+.drum-row{display:flex;align-items:center;gap:5px;justify-content:center;}
+.drum-group{display:flex;gap:3px;}
+.drum{display:flex;flex-direction:column;align-items:center;width:58px;background:rgba(6,9,15,0.7);border:1px solid rgba(240,165,0,0.2);border-radius:5px;overflow:hidden;}
+.drum-btn{width:100%;height:28px;border:none;background:rgba(240,165,0,0.07);color:var(--gold);font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.12s;touch-action:manipulation;}
+.drum-btn:hover{background:rgba(240,165,0,0.18);}
+.drum-btn:active{background:rgba(240,165,0,0.3);}
+.drum-face{height:58px;width:100%;display:flex;align-items:center;justify-content:center;background:rgba(6,9,15,0.9);border-top:1px solid rgba(240,165,0,0.15);border-bottom:1px solid rgba(240,165,0,0.15);}
+.drum-digit{font-family:'Cinzel Decorative',cursive;font-size:2.2rem;color:var(--gold-l);line-height:1;}
+.drum-digit.aup{animation:drumUp 0.12s ease;}
+.drum-digit.adn{animation:drumDown 0.12s ease;}
+@keyframes drumUp{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes drumDown{from{transform:translateY(-10px);opacity:0}to{transform:translateY(0);opacity:1}}
+.hp-bar-wrap{width:100%;height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;margin-top:0.5rem;}
+.hp-bar-fill{height:100%;border-radius:2px;transition:width 0.3s ease,background 0.3s;}
+
+/* DICE SECTION */
+.dice-section{padding:0.7rem 0.9rem;border-bottom:1px solid rgba(240,165,0,0.12);}
+.dice-row{display:flex;align-items:center;gap:0.8rem;}
+.dice-btn{width:64px;height:64px;background:linear-gradient(135deg,#c0392b,#8b0000);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:2rem;cursor:pointer;border:none;box-shadow:0 5px 0 #5a0000,0 7px 16px rgba(0,0,0,0.7),0 0 20px rgba(192,57,43,0.35),inset 0 1px 2px rgba(255,140,120,0.2);transition:all 0.12s;user-select:none;flex-shrink:0;touch-action:manipulation;}
+.dice-btn:active{transform:translateY(4px);box-shadow:0 2px 0 #5a0000,0 4px 8px rgba(0,0,0,0.7);}
+.dice-btn.rolling{animation:dieRoll 0.5s ease;}
+@keyframes dieRoll{0%{transform:rotate(0)scale(1);}25%{transform:rotate(-18deg)scale(1.1);}50%{transform:rotate(14deg)scale(0.92);}75%{transform:rotate(-8deg)scale(1.04);}100%{transform:rotate(0)scale(1);}}
+.dice-info{flex:1;display:flex;flex-direction:column;gap:0.25rem;}
+.dice-roll-big{font-family:'Cinzel Decorative',cursive;font-size:2rem;color:var(--gold-l);line-height:1;}
+.dice-eq{font-family:'Cinzel',serif;font-size:0.72rem;color:#e8d5a3;min-height:1em;}
+.dice-spar{font-family:'Cinzel',serif;font-size:0.65rem;color:#ff9999;min-height:1em;line-height:1.35;}
+.dice-hint{font-family:'Cinzel',serif;font-size:0.6rem;color:#4a5a6a;letter-spacing:0.06em;}
+
+/* OPPONENT ROLL INPUT */
+.opp-section{padding:0.55rem 0.9rem;border-bottom:1px solid rgba(240,165,0,0.12);display:flex;align-items:center;gap:0.6rem;}
+.opp-label{font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:#4a5a6a;white-space:nowrap;}
+.opp-result{font-family:'Cinzel',serif;font-size:0.68rem;color:#ff8a80;margin-left:auto;white-space:nowrap;}
+
+/* COUNTERS */
+.counters-section{display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid rgba(240,165,0,0.12);}
+.counter-box{padding:0.6rem 0.75rem;border-right:1px solid rgba(240,165,0,0.1);}
+.counter-box:last-child{border-right:none;}
+.counter-lbl{font-family:'Cinzel',serif;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:#4a5a6a;margin-bottom:0.35rem;}
+.counter-ctrl{display:flex;align-items:center;gap:5px;}
+.c-btn{width:28px;height:28px;border-radius:50%;border:1px solid rgba(240,165,0,0.2);background:rgba(240,165,0,0.06);color:var(--gold);font-size:1.1rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.12s;font-family:'Cinzel',serif;line-height:1;touch-action:manipulation;}
+.c-btn:hover{background:rgba(240,165,0,0.18);border-color:var(--gold);}
+.c-btn:active{transform:scale(0.88);}
+.c-val{font-family:'Cinzel Decorative',cursive;font-size:1.4rem;color:var(--gold-l);min-width:30px;text-align:center;line-height:1;transition:color 0.2s;}
+.c-val.spar-on{color:#ff8a80;}
+.c-val.supp-on{color:#5dcc8a;}
+.c-note{font-family:'Cinzel',serif;font-size:0.55rem;color:#4a5a6a;margin-top:3px;min-height:13px;line-height:1.3;}
+.c-note.warn{color:#e67e22;}
+.c-note.good{color:#5dcc8a;}
+
+/* DEFEAT ROW */
+.defeat-row{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0.9rem;}
+.defeat-btn{font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.3rem 0.9rem;border:1px solid rgba(192,57,43,0.35);background:rgba(192,57,43,0.1);color:#ff8a80;cursor:pointer;border-radius:2px;transition:all 0.18s;}
+.defeat-btn:hover{background:rgba(192,57,43,0.25);}
+.defeat-btn.is-defeated{color:#6a3030;border-color:rgba(192,57,43,0.15);cursor:default;}
+.name-input{font-family:'Cinzel',serif;font-size:0.75rem;font-weight:600;background:transparent;border:none;outline:none;color:var(--gold-l);letter-spacing:0.06em;border-bottom:1px solid rgba(240,165,0,0.2);padding:2px 0;width:120px;}
+.name-input:focus{border-color:var(--gold);}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.85);backdrop-filter:blur(5px);align-items:center;justify-content:center;padding:1rem;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:linear-gradient(160deg,#0d1828,#06090f);border:1px solid rgba(240,165,0,0.3);border-radius:8px;padding:1.1rem;width:min(560px,96vw);max-height:88vh;overflow-y:auto;position:relative;}
+.modal-box::-webkit-scrollbar{width:3px;}
+.modal-box::-webkit-scrollbar-thumb{background:rgba(240,165,0,0.2);}
+.modal-title{font-family:'Cinzel Decorative',cursive;font-size:1rem;color:var(--gold);margin-bottom:0.2rem;}
+.modal-sub{font-family:'Cinzel',serif;font-size:0.65rem;color:#5a6a7a;letter-spacing:0.08em;margin-bottom:0.8rem;}
+.modal-close{position:absolute;top:0.75rem;right:0.75rem;background:none;border:1px solid rgba(240,165,0,0.2);color:var(--gold);width:26px;height:26px;cursor:pointer;border-radius:2px;font-size:0.75rem;transition:all 0.2s;}
+.modal-close:hover{background:rgba(240,165,0,0.1);}
+.modal-search{width:100%;font-family:'Cinzel',serif;font-size:0.78rem;background:rgba(6,9,15,0.9);border:1px solid rgba(240,165,0,0.2);color:var(--gold-l);padding:0.45rem 0.75rem;outline:none;border-radius:3px;margin-bottom:0.65rem;transition:border-color 0.2s;}
+.modal-search:focus{border-color:var(--gold);}
+.cat-pills{display:flex;gap:0.3rem;flex-wrap:wrap;margin-bottom:0.6rem;}
+.cat-pill{font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.06em;padding:0.2rem 0.6rem;border:1px solid rgba(240,165,0,0.18);background:transparent;color:#6a7a8a;cursor:pointer;border-radius:10px;transition:all 0.2s;}
+.cat-pill:hover,.cat-pill.active{border-color:var(--gold);color:var(--gold-l);background:rgba(240,165,0,0.08);}
+.picker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:0.55rem;}
+.picker-card{border-radius:5px;overflow:hidden;cursor:pointer;border:2px solid rgba(240,165,0,0.15);background:rgba(10,22,40,0.8);transition:all 0.2s;}
+.picker-card:hover{border-color:var(--gold);transform:translateY(-2px);}
+.picker-card.selected{border-color:#5dcc8a;box-shadow:0 0 12px rgba(93,204,138,0.4);}
+.picker-card.in-use{opacity:0.35;cursor:not-allowed;}
+.pc-img{width:100%;aspect-ratio:3/4;position:relative;overflow:hidden;}
+.pc-img img.art{width:100%;height:100%;object-fit:cover;object-position:top;}
+.pc-img .ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem;background:rgba(6,9,15,0.9);}
+.pc-img img.frm{position:absolute;inset:-13% -13%;width:130%;height:130%;object-fit:fill;pointer-events:none;z-index:5;}
+.pc-info{padding:0.28rem 0.38rem;}
+.pc-name{font-family:'Cinzel',serif;font-size:0.5rem;font-weight:700;text-transform:uppercase;color:var(--gold-l);letter-spacing:0.05em;}
+.pc-stats{font-family:'Cinzel',serif;font-size:0.45rem;color:#5a6a7a;margin-top:0.1rem;}
+.supp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:0.55rem;}
+.supp-card{border-radius:5px;overflow:hidden;cursor:pointer;border:2px solid rgba(240,165,0,0.15);background:rgba(10,22,40,0.8);transition:all 0.2s;}
+.supp-card:hover{border-color:var(--gold);transform:translateY(-2px);}
+.supp-card.selected{border-color:#5dcc8a;box-shadow:0 0 12px rgba(93,204,138,0.4);}
+.supp-card-img{width:100%;aspect-ratio:4/3;overflow:hidden;}
+.supp-card-img img{width:100%;height:100%;object-fit:cover;}
+.supp-card-img .sph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;background:rgba(6,9,15,0.8);}
+.supp-card-info{padding:0.28rem 0.38rem;}
+.supp-card-name{font-family:'Cinzel',serif;font-size:0.5rem;font-weight:700;text-transform:uppercase;color:var(--gold);letter-spacing:0.05em;}
+.supp-card-text{font-family:'Cinzel',serif;font-size:0.44rem;color:#7a8a9a;margin-top:0.1rem;line-height:1.35;}
+.btn-row{display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.7rem;}
+.btn{font-family:'Cinzel',serif;font-size:0.68rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.45rem 1rem;border:none;cursor:pointer;border-radius:3px;transition:all 0.2s;}
+.btn-gold{background:linear-gradient(135deg,#c8860a,#f0a500,#ffd166);color:#1a0a00;box-shadow:0 0 14px rgba(240,165,0,0.25);}
+.btn-gold:hover{box-shadow:0 0 26px rgba(240,165,0,0.5);}
+.btn-ghost{background:transparent;border:1px solid rgba(240,165,0,0.2);color:#8a7a58;}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold-l);}
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+
+<nav>
+  <a href="index.html" class="nav-logo">⚔ SPAR Champions</a>
+  <div class="nav-links">
+    <a href="battle.html" class="nav-a">⚔ Battle</a>
+    <a href="index.html" class="nav-a">← Cards</a>
+  </div>
+</nav>
+
+<!-- SETUP -->
+<div id="setupScreen">
+  <div class="setup-title">Score Tracker</div>
+  <div class="setup-sub">Physical Card Companion</div>
+  <div class="setup-box">
+    <div class="setup-row">
+      <span class="setup-label">Starting HP</span>
+      <input type="range" class="setup-slider" id="hpSlider" min="10" max="99" value="65" step="1"
+        oninput="document.getElementById('hpVal').textContent=this.value">
+      <span class="setup-val" id="hpVal">65</span>
+    </div>
+    <div class="setup-row">
+      <span class="setup-label">Opponent</span>
+      <input type="text" id="oppName" placeholder="Opponent name" style="flex:1;font-family:'Cinzel',serif;font-size:0.8rem;background:rgba(6,9,15,0.8);border:1px solid rgba(240,165,0,0.2);color:var(--gold-l);padding:0.4rem 0.6rem;outline:none;border-radius:3px;" value="Opponent">
+    </div>
+    <button class="start-btn" onclick="startGame()">⚔ Start Tracking</button>
+  </div>
+</div>
+
+<!-- TRACKER -->
+<div id="tracker">
+  <div class="score-card">
+
+    <!-- Round strip -->
+    <div class="round-strip">
+      <div>
+        <div class="round-label">Round</div>
+        <div class="round-num" id="roundNum">1</div>
+      </div>
+      <input class="name-input" id="myNameInput" value="Me" oninput="myName=this.value">
+      <button class="strip-btn gold-btn" onclick="nextRound()">Next Round ↺</button>
+      <button class="strip-btn" onclick="resetAll()">Reset</button>
+    </div>
+
+    <!-- Champion + Supporter -->
+    <div class="cards-row">
+      <div class="card-slot" onclick="openChampModal()">
+        <div class="slot-label">⚔ Champion</div>
+        <div id="champSlot">
+          <div class="card-slot-empty"><span style="font-size:1.5rem;">+</span><span>Pick Champion</span></div>
+        </div>
+        <div class="slot-name" id="champName"></div>
+      </div>
+      <div class="card-slot" onclick="openSuppModal()">
+        <div class="slot-label">✨ Supporter</div>
+        <div id="suppSlot">
+          <div class="card-slot-empty"><span style="font-size:1.5rem;">+</span><span>Pick Supporter</span></div>
+        </div>
+        <div class="slot-name" id="suppName"></div>
+      </div>
+    </div>
+
+    <!-- HP Drum -->
+    <div class="hp-section">
+      <div class="hp-top">
+        <span class="hp-label">My HP</span>
+        <span class="hp-big-num" id="hpBigNum">65</span>
+      </div>
+      <div class="drum-row">
+        <div class="drum-group">
+          <div class="drum">
+            <button class="drum-btn" onclick="changeDrum(0,1)">&#9650;</button>
+            <div class="drum-face"><div class="drum-digit" id="d0">6</div></div>
+            <button class="drum-btn" onclick="changeDrum(0,-1)">&#9660;</button>
+          </div>
+          <div class="drum">
+            <button class="drum-btn" onclick="changeDrum(1,1)">&#9650;</button>
+            <div class="drum-face"><div class="drum-digit" id="d1">5</div></div>
+            <button class="drum-btn" onclick="changeDrum(1,-1)">&#9660;</button>
+          </div>
+          <div class="drum">
+            <button class="drum-btn" onclick="changeDrum(2,1)">&#9650;</button>
+            <div class="drum-face"><div class="drum-digit" id="d2">0</div></div>
+            <button class="drum-btn" onclick="changeDrum(2,-1)">&#9660;</button>
+          </div>
+        </div>
+      </div>
+      <div class="hp-bar-wrap">
+        <div class="hp-bar-fill" id="hpBar" style="width:100%;background:linear-gradient(90deg,var(--gold-d),var(--gold))"></div>
+      </div>
+    </div>
+
+    <!-- Dice -->
+    <div class="dice-section">
+      <div class="dice-row">
+        <button class="dice-btn" id="diceBtn" onclick="rollDice()">🎲</button>
+        <div class="dice-info">
+          <div class="dice-roll-big" id="diceRollBig">—</div>
+          <div class="dice-eq" id="diceEq"></div>
+          <div class="dice-spar" id="diceSpar"></div>
+          <div class="dice-hint" id="diceHint">Tap die to roll</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPAR Banner - shown when SPAR activates -->
+    <div id="sparBanner" style="display:none;padding:0.65rem 0.9rem;border-bottom:1px solid rgba(240,165,0,0.12);background:rgba(192,57,43,0.08);border-left:3px solid #ff8a80;">
+      <div style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:#ff8a80;margin-bottom:0.25rem;">⚡ SPAR ACTIVATED</div>
+      <div style="font-family:'Cinzel',serif;font-size:0.8rem;color:#ffd0c0;line-height:1.45;" id="sparBannerText"></div>
+    </div>
+
+    <!-- Opponent damage -->
+    <div class="opp-section">
+      <span class="opp-label" id="oppLabel">Opponent deals:</span>
+      <input type="number" id="oppDmgInput" min="0" max="999" placeholder="0"
+        style="width:70px;font-family:'Cinzel Decorative',cursive;font-size:1.2rem;text-align:center;background:rgba(6,9,15,0.8);border:1px solid rgba(192,57,43,0.4);color:#ff8a80;padding:0.3rem 0.4rem;border-radius:3px;outline:none;"
+        oninput="this.value=this.value.replace(/[^0-9]/,'')"
+        onkeydown="if(event.key==='Enter')applyOppDmg()">
+      <span style="font-family:'Cinzel',serif;font-size:0.65rem;color:#4a5a6a;">DP</span>
+      <button class="strip-btn gold-btn" onclick="applyOppDmg()" style="font-size:0.62rem;padding:0.3rem 0.7rem;">Apply</button>
+      <span class="opp-result" id="oppResult"></span>
+    </div>
+
+    <!-- SPAR + Supporter counters -->
+    <div class="counters-section">
+      <div class="counter-box">
+        <div class="counter-lbl">⚡ SPAR turns</div>
+        <div class="counter-ctrl">
+          <button class="c-btn" onclick="changeSpar(-1)">&#8722;</button>
+          <div class="c-val" id="sparVal">0</div>
+          <button class="c-btn" onclick="changeSpar(1)">+</button>
+        </div>
+        <div class="c-note" id="sparNote">Inactive</div>
+      </div>
+      <div class="counter-box">
+        <div class="counter-lbl">✨ Supporter turns</div>
+        <div class="counter-ctrl">
+          <button class="c-btn" onclick="changeSupp(-1)">&#8722;</button>
+          <div class="c-val" id="suppVal">0</div>
+          <button class="c-btn" onclick="changeSupp(1)">+</button>
+        </div>
+        <div class="c-note" id="suppNote">Not in play</div>
+      </div>
+    </div>
+
+    <!-- Bottom row -->
+    <div class="defeat-row">
+      <span style="font-family:'Cinzel',serif;font-size:0.6rem;color:#3a4a5a;letter-spacing:0.08em;">MY CHAMPION</span>
+      <button class="strip-btn" onclick="resetAll()" style="font-size:0.6rem;">↺ Reset</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- CHAMPION PICKER MODAL -->
+<div class="modal-overlay" id="champModal">
+  <div class="modal-box">
+    <div class="modal-title">Pick Your Champion</div>
+    <div class="modal-sub">Select from your physical cards</div>
+    <button class="modal-close" onclick="closeModal('champModal')">✕</button>
+    <input class="modal-search" id="champSearch" placeholder="Search..." oninput="renderChampGrid()">
+    <div class="cat-pills" id="catPills"></div>
+    <div class="picker-grid" id="champGrid"></div>
+    <div class="btn-row">
+      <button class="btn btn-gold" onclick="confirmChamp()">✓ Confirm</button>
+      <button class="btn btn-ghost" onclick="closeModal('champModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUPPORTER PICKER MODAL -->
+<div class="modal-overlay" id="suppModal">
+  <div class="modal-box">
+    <div class="modal-title">Pick Supporter Card</div>
+    <div class="modal-sub">Select from your physical hand</div>
+    <button class="modal-close" onclick="closeModal('suppModal')">✕</button>
+    <input class="modal-search" id="suppSearch" placeholder="Search..." oninput="renderSuppGrid()">
+    <div class="supp-grid" id="suppGrid"></div>
+    <div class="btn-row">
+      <button class="btn btn-gold" onclick="confirmSupp()">✓ Play Card</button>
+      <button class="btn btn-ghost" onclick="closeModal('suppModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script src="data/cards.js"></script>
+<script>
+// ── PARTICLES ──
+const canvas=document.getElementById('particles'),ctx=canvas.getContext('2d');
+function resC(){canvas.width=innerWidth;canvas.height=innerHeight;}resC();window.addEventListener('resize',resC);
+class P{constructor(){this.reset();}reset(){this.x=Math.random()*canvas.width;this.y=Math.random()*canvas.height;this.size=Math.random()*1.4+0.3;this.sx=(Math.random()-.5)*.22;this.sy=-Math.random()*.3-.06;this.o=Math.random()*.28+.06;const r=Math.random();this.c=r>.6?`rgba(240,165,0,${this.o})`:r>.35?`rgba(79,195,247,${this.o})`:`rgba(232,213,163,${this.o})`;}update(){this.x+=this.sx;this.y+=this.sy;if(this.y<-5||this.x<-5||this.x>canvas.width+5)this.reset();}draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fillStyle=this.c;ctx.fill();}}
+const ptcls=Array.from({length:80},()=>new P());
+(function anim(){ctx.clearRect(0,0,canvas.width,canvas.height);ptcls.forEach(p=>{p.update();p.draw();});requestAnimationFrame(anim);})();
+
+// ── CATEGORY EMOJI ──
+const CAT_EMOJI={"Wizards":"🧙","Sky Riders":"🦅","Wild Beasts":"🐾","Sea Creatures":"🌊","Archers":"🏹","Knights":"⚔️","Elves":"🌿","Monks":"🥋","Insects":"🐛","Dragons":"🐉"};
+const getCE=c=>CAT_EMOJI[c]||"⚡";
+const FACES=['⚀','⚁','⚂','⚃','⚄','⚅'];
+
+// ── STATE ──
+let startHp=65, hp=[6,5,0], maxHp=65;
+let sparTurns=0, suppTurns=0, round=1, defeated=false;
+let myName='Me', oppNameVal='Opponent';
+let myChamp=null, mySupp=null;
+let champCat='all', champSelected=null, suppSelected=null;
+let lastRoll=null, oppRoll=null;
+
+function numOf(d){return d[0]*100+d[1]*10+d[2];}
+function digitsOf(n){const s=String(Math.max(0,Math.min(999,n))).padStart(3,'0');return[+s[0],+s[1],+s[2]];}
+
+// ── SETUP ──
+function startGame(){
+  startHp=+document.getElementById('hpSlider').value;
+  maxHp=startHp;
+  hp=digitsOf(startHp);
+  oppNameVal=document.getElementById('oppName').value||'Opponent';
+  document.getElementById('oppLabel').textContent=(document.getElementById('oppName').value||'Opponent')+' deals:';
+  document.getElementById('setupScreen').style.display='none';
+  document.getElementById('tracker').style.display='flex';
+  buildCatPills();
+  updateDrums();
+  updateHpBar();
+}
+
+// ── ROUND ──
+function nextRound(){
+  round++;
+  document.getElementById('roundNum').textContent=round;
+  lastRoll=null;oppRoll=null;
+  document.getElementById('diceRollBig').textContent='—';
+  document.getElementById('diceEq').textContent='';
+  document.getElementById('diceSpar').textContent='';
+  document.getElementById('diceHint').textContent='Tap die to roll';
+  document.getElementById('diceBtn').textContent='🎲';
+  document.getElementById('oppResult').textContent='';
+  document.getElementById('oppDmgInput').value='';
+  document.getElementById('sparBanner').style.display='none';
+}
+
+function resetAll(){
+  if(!confirm('Reset HP and counters?'))return;
+  hp=digitsOf(maxHp);sparTurns=0;suppTurns=0;round=1;defeated=false;lastRoll=null;oppRoll=null;
+  document.getElementById('roundNum').textContent=1;
+  document.getElementById('diceRollBig').textContent='—';
+  document.getElementById('diceEq').textContent='';
+  document.getElementById('diceSpar').textContent='';
+  document.getElementById('diceHint').textContent='Tap die to roll';
+  document.getElementById('diceBtn').textContent='🎲';
+  document.getElementById('oppResult').textContent='';
+  document.getElementById('oppDmgInput').value='';
+  document.getElementById('sparBanner').style.display='none';
+  updateDrums();updateHpBar();updateCounters();
+}
+
+// ── DRUM ──
+function changeDrum(di,delta){
+  if(defeated)return;
+  hp[di]=(hp[di]+delta+10)%10;
+  const el=document.getElementById('d'+di);
+  el.classList.remove('aup','adn');void el.offsetWidth;
+  el.classList.add(delta>0?'aup':'adn');
+  el.textContent=hp[di];
+  document.getElementById('hpBigNum').textContent=numOf(hp);
+  updateHpBar();
+}
+function updateDrums(){
+  [0,1,2].forEach(i=>{document.getElementById('d'+i).textContent=hp[i];});
+  document.getElementById('hpBigNum').textContent=numOf(hp);
+}
+function updateHpBar(){
+  const n=numOf(hp),pct=Math.min(100,Math.round(n/maxHp*100));
+  const bar=document.getElementById('hpBar');
+  bar.style.width=pct+'%';
+  bar.style.background=pct>50?'linear-gradient(90deg,var(--gold-d),var(--gold))':pct>25?'linear-gradient(90deg,#8b4000,#e67e22)':'linear-gradient(90deg,#5a0000,#c0392b)';
+}
+
+// ── DICE ──
+function rollDice(){
+  const btn=document.getElementById('diceBtn');
+  btn.classList.remove('rolling');void btn.offsetWidth;btn.classList.add('rolling');
+  let t=0;
+  const iv=setInterval(()=>{
+    btn.textContent=FACES[Math.floor(Math.random()*6)];t++;
+    if(t>12){
+      clearInterval(iv);
+      const roll=Math.floor(Math.random()*6)+1;
+      btn.textContent=FACES[roll-1];
+      lastRoll=roll;
+      showRollResult(roll);
+    }
+  },55);
+}
+
+function showRollResult(roll){
+  document.getElementById('diceRollBig').textContent=roll;
+  const isSpar=myChamp&&roll===myChamp.sparRoll;
+  const banner=document.getElementById('sparBanner');
+  if(isSpar){
+    document.getElementById('diceSpar').textContent='';
+    document.getElementById('diceEq').textContent='Roll '+roll+' = SPAR!';
+    document.getElementById('diceHint').textContent='See ability below';
+    banner.style.display='block';
+    document.getElementById('sparBannerText').textContent=myChamp.sparAbility;
+  } else {
+    document.getElementById('diceEq').textContent='Deals '+roll+' DP to opponent';
+    document.getElementById('diceSpar').textContent='';
+    document.getElementById('diceHint').textContent=myChamp?'SPAR activates on roll '+myChamp.sparRoll:'Pick a champion to track SPAR';
+    banner.style.display='none';
+  }
+  // Tick down SPAR and supporter turns on roll
+  if(sparTurns>0){sparTurns--;updateCounters();}
+  if(suppTurns>0){suppTurns--;updateCounters();}
+}
+
+// ── OPPONENT DAMAGE ──
+function applyOppDmg(){
+  const input=document.getElementById('oppDmgInput');
+  const dmg=parseInt(input.value)||0;
+  if(dmg<=0){input.value='';return;}
+  const cur=numOf(hp);
+  const newHp=Math.max(0,cur-dmg);
+  hp=digitsOf(newHp);
+  updateDrums();updateHpBar();
+  document.getElementById('oppResult').textContent=`${cur} − ${dmg} = ${newHp} HP`;
+  input.value='';
+  if(newHp===0){
+    defeated=true;
+    setTimeout(()=>{ alert('💀 Your champion has been defeated!'); },300);
+  } else {
+    setTimeout(()=>nextRound(),600);
+  }
+}
+
+// ── COUNTERS ──
+function changeSpar(delta){sparTurns=Math.max(0,sparTurns+delta);updateCounters();}
+function changeSupp(delta){suppTurns=Math.max(0,suppTurns+delta);updateCounters();}
+function updateCounters(){
+  const sv=document.getElementById('sparVal');
+  const sn=document.getElementById('sparNote');
+  sv.textContent=sparTurns;
+  sv.className='c-val'+(sparTurns>0?' spar-on':'');
+  if(sparTurns===0){sn.textContent='Inactive';sn.className='c-note';}
+  else if(sparTurns===1){sn.textContent='Last turn!';sn.className='c-note warn';}
+  else{sn.textContent=sparTurns+' turns left';sn.className='c-note';}
+  const uv=document.getElementById('suppVal');
+  const un=document.getElementById('suppNote');
+  uv.textContent=suppTurns;
+  uv.className='c-val'+(suppTurns>0?' supp-on':'');
+  if(suppTurns===0){un.textContent='Not in play';un.className='c-note';}
+  else if(suppTurns===1){un.textContent='Expires this turn!';un.className='c-note warn';}
+  else{un.textContent=suppTurns+' turns left';un.className='c-note good';}
+}
+
+// ── CHAMPION PICKER ──
+function openChampModal(){champSelected=null;document.getElementById('champSearch').value='';champCat='all';buildCatPills();renderChampGrid();openModal('champModal');}
+
+function buildCatPills(){
+  const el=document.getElementById('catPills');
+  if(!el)return;
+  el.innerHTML=['all',...(typeof CATEGORIES!=='undefined'?CATEGORIES:[])].map(c=>
+    `<button class="cat-pill ${champCat===c?'active':''}" onclick="setCat('${c}')">${c==='all'?'All':getCE(c)+' '+c}</button>`
+  ).join('');
+}
+function setCat(c){champCat=c;buildCatPills();renderChampGrid();}
+
+function renderChampGrid(){
+  const s=document.getElementById('champSearch').value.toLowerCase();
+  document.getElementById('champGrid').innerHTML=CHAMPIONS.filter(c=>{
+    return(champCat==='all'||c.category===champCat)&&(!s||c.name.toLowerCase().includes(s)||c.category.toLowerCase().includes(s));
+  }).map(c=>{
+    const sel=champSelected?.name===c.name;
+    return `<div class="picker-card ${sel?'selected':''}" onclick="selectChamp('${c.name.replace(/'/g,"\\'")  }')">
+      <div class="pc-img">
+        ${c.image?`<img class="art" src="images/champions/${c.image}" alt="${c.name}" onerror="this.outerHTML='<div class=ph>${getCE(c.category)}</div>'">`:`<div class="ph">${getCE(c.category)}</div>`}
+        <img class="frm" src="images/frame.png" alt="">
+      </div>
+      <div class="pc-info">
+        <div class="pc-name">${c.name}</div>
+        <div class="pc-stats">${c.hp}HP · SPAR ${c.sparRoll}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function selectChamp(name){champSelected=CHAMPIONS.find(c=>c.name===name);renderChampGrid();}
+function confirmChamp(){
+  if(!champSelected){alert('Pick a champion first!');return;}
+  myChamp=champSelected;
+  maxHp=myChamp.hp; hp=digitsOf(myChamp.hp);
+  updateDrums();updateHpBar();
+  renderChampSlot();
+  document.getElementById('champName').textContent=myChamp.name;
+  document.getElementById('diceHint').textContent='SPAR activates on roll '+myChamp.sparRoll;
+  closeModal('champModal');
+}
+
+function renderChampSlot(){
+  const c=myChamp;
+  document.getElementById('champSlot').innerHTML=`
+    <div class="mini-card">
+      ${c.image?`<img class="card-art" src="images/champions/${c.image}" alt="${c.name}" onerror="this.outerHTML='<div class=card-placeholder>${getCE(c.category)}</div>'">`:`<div class="card-placeholder">${getCE(c.category)}</div>`}
+      <img class="card-frame" src="images/frame.png" alt="">
+      <div class="mc-name">${c.name}</div>
+      <div class="mc-hp">${c.hp}</div>
+      <div class="mc-spar">${c.sparRoll}</div>
+      <div class="mc-ability">${c.sparAbility}</div>
+    </div>`;
+  document.getElementById('champName').textContent='';
+}
+
+// ── SUPPORTER PICKER ──
+function openSuppModal(){suppSelected=null;document.getElementById('suppSearch').value='';renderSuppGrid();openModal('suppModal');}
+
+function renderSuppGrid(){
+  const s=document.getElementById('suppSearch').value.toLowerCase();
+  document.getElementById('suppGrid').innerHTML=SUPPORTERS.filter(c=>!s||c.name.toLowerCase().includes(s)||c.ability.toLowerCase().includes(s)).map(c=>{
+    const sel=suppSelected?.name===c.name;
+    return `<div class="supp-card ${sel?'selected':''}" onclick="selectSupp('${c.name.replace(/'/g,"\\'")}')">
+      <div class="supp-card-img">
+        ${c.image?`<img src="images/supporters/${c.image}" alt="${c.name}" onerror="this.outerHTML='<div class=sph>✨</div>'">`:`<div class="sph">✨</div>`}
+      </div>
+      <div class="supp-card-info">
+        <div class="supp-card-name">${c.name}</div>
+        <div class="supp-card-text">${c.ability}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function selectSupp(name){suppSelected=SUPPORTERS.find(s=>s.name===name);renderSuppGrid();}
+function confirmSupp(){
+  if(!suppSelected){alert('Pick a supporter first!');return;}
+  mySupp=suppSelected;
+  renderSuppSlot();
+  document.getElementById('suppName').textContent='';
+  closeModal('suppModal');
+}
+
+function renderSuppSlot(){
+  const s=mySupp;
+  document.getElementById('suppSlot').innerHTML=`
+    <div class="mini-card" style="aspect-ratio:3/4;">
+      ${s.image?`<img class="card-art" src="images/supporters/${s.image}" alt="${s.name}" onerror="this.outerHTML='<div class=card-placeholder style=font-size:2rem>✨</div>'">`:`<div class="card-placeholder" style="font-size:2rem;">✨</div>`}
+      <img class="card-frame" src="images/frame.png" alt="">
+      <div class="mc-name">${s.name}</div>
+      <div class="mc-ability centered">${s.ability}</div>
+    </div>`;
+  document.getElementById('suppName').textContent='';
+}
+
+// ── MODAL HELPERS ──
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(m=>{
+  m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');});
+});
+</script>
+</body>
+</html>
