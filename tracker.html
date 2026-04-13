@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>SPAR Champions — Score Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #f0a500;
+  --gold-l: #ffd166;
+  --gold-d: #8b6914;
+  --gold-m: #c8860a;
+  --navy: #06090f;
+  --navy2: #0a1628;
+  --blue: #4fc3f7;
+  --red: #c0392b;
+  --green: #27ae60;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html { scroll-behavior:smooth; }
+
+body {
+  background: var(--navy);
+  color: #e8d5a3;
+  font-family: 'Crimson Text', serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* particles */
+#particles { position:fixed; inset:0; pointer-events:none; z-index:0; }
+
+/* NAV */
+nav {
+  position: sticky; top:0; z-index:200;
+  padding: 0.7rem 1.2rem;
+  display: flex; align-items:center; justify-content:space-between; gap:0.5rem;
+  background: rgba(6,9,15,0.97);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(240,165,0,0.18);
+  flex-wrap: wrap;
+}
+.nav-logo {
+  font-family: 'Cinzel Decorative', cursive;
+  font-size: 0.95rem; color: var(--gold);
+  text-decoration: none;
+  text-shadow: 0 0 15px rgba(240,165,0,0.35);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+.nav-links { display:flex; gap:0.4rem; align-items:center; flex-wrap:wrap; }
+.nav-a {
+  font-family: 'Cinzel', serif; font-size:0.68rem;
+  letter-spacing:0.1em; text-transform:uppercase;
+  padding: 0.38rem 0.85rem;
+  border: 1px solid rgba(240,165,0,0.22);
+  color: #8a7a58; text-decoration:none;
+  background: transparent; cursor:pointer;
+  transition: all 0.2s; border-radius:2px;
+  white-space: nowrap;
+}
+.nav-a:hover { border-color:var(--gold); color:var(--gold-l); background:rgba(240,165,0,0.07); }
+.nav-a.gold {
+  background: linear-gradient(135deg,#c8860a,#f0a500,#ffd166);
+  color: #1a0a00; border:none;
+  clip-path: polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);
+  box-shadow: 0 0 14px rgba(240,165,0,0.3);
+}
+.nav-a.gold:hover { box-shadow:0 0 26px rgba(240,165,0,0.6); transform:translateY(-1px); }
+.round-badge {
+  font-family: 'Cinzel', serif; font-size:0.68rem;
+  color: #5a6a7a; letter-spacing:0.1em; white-space:nowrap;
+}
+.round-badge b { color: var(--gold-l); }
+
+/* SETUP */
+#setupScreen {
+  position: relative; z-index:1;
+  min-height: 88vh;
+  display: flex; flex-direction:column; align-items:center; justify-content:center;
+  padding: 2rem 1rem;
+  text-align: center;
+  background: radial-gradient(ellipse 70% 50% at 50% 40%, rgba(26,111,181,0.1) 0%, transparent 70%);
+}
+.setup-title {
+  font-family: 'Cinzel Decorative', cursive;
+  font-size: clamp(2rem,7vw,3.8rem);
+  background: linear-gradient(180deg,#ffd166,#f0a500,#c8860a);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  filter: drop-shadow(0 0 22px rgba(240,165,0,0.35));
+  line-height: 1.1; margin-bottom:0.2rem;
+}
+.setup-sub {
+  font-family:'Cinzel',serif; font-size:clamp(0.75rem,2vw,0.95rem);
+  color:var(--blue); letter-spacing:0.3em; margin-bottom:2.5rem;
+}
+
+.setup-box {
+  background: rgba(10,22,40,0.85);
+  border: 1px solid rgba(240,165,0,0.18);
+  border-radius:6px;
+  padding: 1.6rem 2rem;
+  width: min(420px, 92vw);
+  margin-bottom: 1rem;
+}
+
+.setup-row {
+  display: flex; align-items:center; gap:1rem;
+  margin-bottom: 1.2rem;
+}
+.setup-row:last-child { margin-bottom:0; }
+
+.setup-label {
+  font-family:'Cinzel',serif; font-size:0.78rem;
+  letter-spacing:0.1em; color:#8a7a58;
+  min-width: 90px; text-align:left;
+}
+.setup-slider { flex:1; }
+.setup-val {
+  font-family:'Cinzel Decorative',cursive;
+  font-size:1.2rem; color:var(--gold-l);
+  min-width:36px; text-align:center;
+}
+
+.start-btn {
+  width: 100%; margin-top:1.2rem;
+  padding: 0.9rem;
+  font-family:'Cinzel',serif; font-size:0.9rem;
+  font-weight:700; letter-spacing:0.15em; text-transform:uppercase;
+  background: linear-gradient(135deg,#c8860a,#f0a500,#ffd166);
+  color:#1a0a00; border:none; cursor:pointer;
+  clip-path: polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);
+  box-shadow: 0 0 24px rgba(240,165,0,0.35);
+  transition: all 0.25s;
+}
+.start-btn:hover { box-shadow:0 0 40px rgba(240,165,0,0.6); transform:translateY(-2px); }
+
+/* TRACKER */
+#tracker { display:none; position:relative; z-index:1; padding:0.8rem; }
+
+/* global action strip */
+.action-strip {
+  display: flex; gap:0.5rem; align-items:center;
+  flex-wrap: wrap;
+  background: rgba(10,22,40,0.7);
+  border: 1px solid rgba(240,165,0,0.15);
+  border-radius:4px;
+  padding: 0.55rem 0.8rem;
+  margin-bottom: 0.8rem;
+}
+.strip-info {
+  font-family:'Cinzel',serif; font-size:0.75rem;
+  color: var(--gold-l); letter-spacing:0.08em;
+  flex:1; white-space:nowrap;
+}
+.strip-info span { color:var(--blue); }
+
+.act-btn {
+  font-family:'Cinzel',serif; font-size:0.68rem;
+  letter-spacing:0.08em; text-transform:uppercase;
+  padding: 0.42rem 1rem;
+  border: 1px solid rgba(240,165,0,0.25);
+  background: transparent; color:#8a7a58;
+  cursor:pointer; border-radius:2px;
+  transition: all 0.2s; white-space:nowrap;
+}
+.act-btn:hover { border-color:var(--gold); color:var(--gold-l); background:rgba(240,165,0,0.08); }
+.act-btn.primary {
+  background: linear-gradient(135deg,#c8860a,#f0a500,#ffd166);
+  color:#1a0a00; border:none;
+  clip-path: polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);
+  font-size:0.75rem; padding:0.45rem 1.2rem;
+  box-shadow:0 0 14px rgba(240,165,0,0.28);
+}
+.act-btn.primary:hover { box-shadow:0 0 26px rgba(240,165,0,0.55); transform:translateY(-1px); }
+
+/* GRID */
+.players-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px,1fr));
+  gap: 0.8rem;
+}
+
+/* PLAYER CARD */
+.pcard {
+  background: rgba(10,22,40,0.75);
+  border: 1px solid rgba(240,165,0,0.2);
+  border-radius:6px;
+  overflow:hidden;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+.pcard.is-turn {
+  border-color: var(--gold);
+  box-shadow: 0 0 20px rgba(240,165,0,0.15);
+}
+.pcard.defeated { opacity:0.38; border-color:rgba(192,57,43,0.3); }
+
+/* card header */
+.pcard-head {
+  padding: 0.55rem 0.85rem;
+  display:flex; align-items:center; justify-content:space-between; gap:0.5rem;
+  border-bottom: 1px solid rgba(240,165,0,0.12);
+  background: rgba(6,9,15,0.5);
+}
+.pname-input {
+  font-family:'Cinzel',serif; font-size:0.82rem; font-weight:600;
+  background:transparent; border:none; outline:none;
+  color:var(--gold-l); letter-spacing:0.06em;
+  border-bottom:1px solid rgba(240,165,0,0.2);
+  padding:2px 0; width:120px;
+  transition: border-color 0.2s;
+}
+.pname-input:focus { border-color:var(--gold); }
+.turn-pill {
+  font-family:'Cinzel',serif; font-size:0.58rem; letter-spacing:0.1em;
+  text-transform:uppercase; padding:0.18rem 0.65rem;
+  background:rgba(240,165,0,0.15); border:1px solid rgba(240,165,0,0.35);
+  color:var(--gold-l); border-radius:10px;
+  display:none; white-space:nowrap;
+}
+.pcard.is-turn .turn-pill { display:inline-block; }
+
+/* card body */
+.pcard-body { padding:0.75rem 0.85rem; }
+
+/* HP DRUM */
+.hp-section { margin-bottom:0.75rem; }
+.sec-lbl {
+  font-family:'Cinzel',serif; font-size:0.58rem;
+  letter-spacing:0.15em; text-transform:uppercase;
+  color:#4a5a6a; margin-bottom:0.45rem;
+}
+.drum-row { display:flex; align-items:center; gap:6px; }
+.drum-group { display:flex; gap:3px; }
+
+.drum {
+  display:flex; flex-direction:column; align-items:center;
+  width:52px; background:rgba(6,9,15,0.7);
+  border:1px solid rgba(240,165,0,0.2);
+  border-radius:5px; overflow:hidden;
+  cursor:pointer;
+}
+.drum-btn {
+  width:100%; height:26px; border:none;
+  background:rgba(240,165,0,0.07);
+  color:var(--gold); font-size:11px; font-weight:700;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition: background 0.12s;
+  font-family:'Cinzel',serif;
+  touch-action: manipulation;
+}
+.drum-btn:hover { background:rgba(240,165,0,0.16); }
+.drum-btn:active { background:rgba(240,165,0,0.28); }
+
+.drum-face {
+  height:56px; width:100%;
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(6,9,15,0.9);
+  border-top:1px solid rgba(240,165,0,0.15);
+  border-bottom:1px solid rgba(240,165,0,0.15);
+}
+.drum-digit {
+  font-family:'Cinzel Decorative',cursive;
+  font-size:2rem; color:var(--gold-l);
+  line-height:1; font-variant-numeric:tabular-nums;
+}
+.drum-digit.aup { animation:drumUp 0.12s ease; }
+.drum-digit.adn { animation:drumDown 0.12s ease; }
+@keyframes drumUp   { from{transform:translateY(10px);opacity:0} to{transform:translateY(0);opacity:1} }
+@keyframes drumDown { from{transform:translateY(-10px);opacity:0} to{transform:translateY(0);opacity:1} }
+
+.hp-readout {
+  margin-left:8px;
+  display:flex; flex-direction:column; align-items:flex-start; justify-content:center;
+}
+.hp-big {
+  font-family:'Cinzel Decorative',cursive;
+  font-size:1.5rem; color:var(--gold-l); line-height:1;
+}
+.hp-lbl {
+  font-family:'Cinzel',serif; font-size:0.55rem;
+  letter-spacing:0.12em; color:#4a5a6a; margin-top:2px;
+}
+
+
+/* HP bar */
+.hp-bar-wrap {
+  width:100%; height:4px; background:rgba(255,255,255,0.06);
+  border-radius:2px; overflow:hidden; margin-top:0.45rem;
+}
+.hp-bar-fill {
+  height:100%; border-radius:2px;
+  background:linear-gradient(90deg,var(--gold-d),var(--gold));
+  transition:width 0.3s ease, background 0.3s;
+}
+
+/* MINI COUNTERS */
+.counters-row { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:0.65rem; }
+.counter-box {
+  background:rgba(6,9,15,0.6);
+  border:1px solid rgba(240,165,0,0.12);
+  border-radius:4px; padding:0.5rem 0.6rem;
+}
+.counter-lbl {
+  font-family:'Cinzel',serif; font-size:0.55rem;
+  letter-spacing:0.1em; text-transform:uppercase; color:#4a5a6a;
+  margin-bottom:0.35rem;
+}
+.counter-ctrl { display:flex; align-items:center; gap:5px; }
+.c-btn {
+  width:28px; height:28px; border-radius:50%;
+  border:1px solid rgba(240,165,0,0.2);
+  background:rgba(240,165,0,0.06); color:var(--gold);
+  font-size:1.1rem; font-weight:700; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:all 0.12s; flex-shrink:0;
+  font-family:'Cinzel',serif; line-height:1;
+  touch-action: manipulation;
+}
+.c-btn:hover { background:rgba(240,165,0,0.18); border-color:var(--gold); }
+.c-btn:active { transform:scale(0.88); }
+.c-val {
+  font-family:'Cinzel Decorative',cursive;
+  font-size:1.4rem; color:var(--gold-l);
+  min-width:30px; text-align:center; line-height:1;
+  transition:color 0.2s;
+}
+.c-val.spar-on { color:#ff8a80; }
+.c-val.supp-on { color:#5dcc8a; }
+.c-note {
+  font-family:'Cinzel',serif; font-size:0.55rem;
+  color:#4a5a6a; margin-top:3px; min-height:13px;
+  line-height:1.3;
+}
+.c-note.warn { color:#e67e22; }
+.c-note.good { color:#5dcc8a; }
+
+/* DEFEAT */
+.defeat-row { display:flex; justify-content:center; }
+.defeat-btn {
+  font-family:'Cinzel',serif; font-size:0.6rem;
+  letter-spacing:0.1em; text-transform:uppercase;
+  padding:0.3rem 1rem;
+  border:1px solid rgba(192,57,43,0.35);
+  background:rgba(192,57,43,0.1); color:#ff8a80;
+  cursor:pointer; border-radius:2px;
+  transition:all 0.18s;
+}
+.defeat-btn:hover { background:rgba(192,57,43,0.25); border-color:var(--red); }
+.defeat-btn.is-defeated { color:#6a3030; border-color:rgba(192,57,43,0.15); cursor:default; }
+
+/* DIVIDER */
+.divider {
+  position:relative; z-index:1;
+  display:flex; align-items:center; justify-content:center;
+  padding:0.4rem 1rem; margin:0.4rem 0;
+}
+.divider::before,.divider::after {
+  content:''; flex:1; height:1px;
+  background:linear-gradient(90deg,transparent,rgba(240,165,0,0.2),transparent);
+}
+.divider-icon { font-size:1rem; margin:0 0.8rem; color:rgba(240,165,0,0.4); }
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">⚔ SPAR Champions</a>
+  <div class="nav-links">
+    <span class="round-badge" id="roundBadge" style="display:none;">Round <b id="rNum">1</b> · Turn <b id="tNum">1</b></span>
+    <button class="act-btn primary" id="nextTurnBtn" onclick="nextTurn()" style="display:none;">Next Turn →</button>
+    <button class="act-btn" id="nextRoundBtn" onclick="nextRound()" style="display:none;">↺ Next Round</button>
+    <button class="act-btn" id="resetBtn" onclick="resetAll()" style="display:none;">Reset</button>
+    <a href="battle.html" class="nav-a">⚔ Battle</a>
+    <a href="index.html" class="nav-a">← Cards</a>
+  </div>
+</nav>
+
+<!-- SETUP -->
+<div id="setupScreen">
+  <div class="setup-title">Score Tracker</div>
+  <div class="setup-sub">Physical Card Companion</div>
+
+  <div class="setup-box">
+    <div class="setup-row">
+      <span class="setup-label">Starting HP</span>
+      <input type="range" class="setup-slider" id="hpSlider" min="10" max="99" value="65" step="1"
+        oninput="document.getElementById('hpVal').textContent=this.value">
+      <span class="setup-val" id="hpVal">65</span>
+    </div>
+    <button class="start-btn" onclick="startGame()">⚔ Start Tracking</button>
+  </div>
+
+  <div style="max-width:380px;margin-top:1.5rem;text-align:left;">
+    <div style="font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.15em;color:#4a5a6a;text-transform:uppercase;margin-bottom:0.6rem;">How to use</div>
+    <div style="display:grid;gap:0.4rem;">
+      <div style="font-size:0.82rem;color:#5a6a7a;">🥁 <span style="color:#8a9a8a;">Spin the HP drums</span> — ▲ ▼ on each digit, like a combination lock</div>
+      <div style="font-size:0.82rem;color:#5a6a7a;">⚡ <span style="color:#8a9a8a;">SPAR turns</span> — tap + when a SPAR activates, − to count down</div>
+      <div style="font-size:0.82rem;color:#5a6a7a;">✨ <span style="color:#8a9a8a;">Supporter turns</span> — track how long the card stays in play</div>
+      <div style="font-size:0.82rem;color:#5a6a7a;">↺ <span style="color:#8a9a8a;">Next Round</span> — ticks both counters down by 1 automatically</div>
+    </div>
+  </div>
+</div>
+
+<!-- TRACKER -->
+<div id="tracker">
+  <div class="action-strip" id="actionStrip" style="display:none;">
+    <span class="strip-info" id="stripInfo"></span>
+    <button class="act-btn" onclick="nextRound()">↺ Next Round</button>
+    <button class="act-btn" onclick="resetAll()">Reset</button>
+  </div>
+  <div class="players-grid" id="playersGrid"></div>
+</div>
+
+<script>
+// ── PARTICLES ──
+const canvas=document.getElementById('particles'),ctx=canvas.getContext('2d');
+function resizeCanvas(){canvas.width=innerWidth;canvas.height=innerHeight;}
+resizeCanvas();window.addEventListener('resize',resizeCanvas);
+class P{constructor(){this.reset();}reset(){this.x=Math.random()*canvas.width;this.y=Math.random()*canvas.height;this.size=Math.random()*1.4+0.3;this.sx=(Math.random()-.5)*.22;this.sy=-Math.random()*.3-.06;this.o=Math.random()*.28+.06;const r=Math.random();this.c=r>.6?`rgba(240,165,0,${this.o})`:r>.35?`rgba(79,195,247,${this.o})`:`rgba(232,213,163,${this.o})`;}update(){this.x+=this.sx;this.y+=this.sy;if(this.y<-5||this.x<-5||this.x>canvas.width+5)this.reset();}draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fillStyle=this.c;ctx.fill();}}
+const ptcls=Array.from({length:80},()=>new P());
+(function anim(){ctx.clearRect(0,0,canvas.width,canvas.height);ptcls.forEach(p=>{p.update();p.draw();});requestAnimationFrame(anim);})();
+
+// ── STATE ──
+let numPlayers=2, startHp=65, currentTurn=0, round=1, turnCount=1;
+let players=[];
+
+function digitsOf(n){const s=String(Math.max(0,Math.min(999,n))).padStart(3,'0');return[+s[0],+s[1],+s[2]];}
+function numOf(d){return d[0]*100+d[1]*10+d[2];}
+
+// ── SETUP ──
+function startGame(){
+  numPlayers=1;
+  startHp=+document.getElementById('hpSlider').value;
+  players=[{
+    name:'Player',hp:digitsOf(startHp),maxHp:startHp,
+    sparTurns:0,suppTurns:0,defeated:false,
+  }];
+  currentTurn=0;round=1;turnCount=1;
+  document.getElementById('setupScreen').style.display='none';
+  document.getElementById('tracker').style.display='block';
+  document.getElementById('actionStrip').style.display='flex';
+  document.getElementById('roundBadge').style.display='inline-flex';
+  document.getElementById('nextTurnBtn').style.display='none';
+  document.getElementById('nextRoundBtn').style.display='';
+  document.getElementById('resetBtn').style.display='';
+  updateMeta();
+  renderAll();
+}
+
+function resetAll(){
+  if(!confirm('Reset all HP and counters to start?'))return;
+  currentTurn=0;round=1;turnCount=1;
+  players.forEach(p=>{p.hp=digitsOf(p.maxHp);p.sparTurns=0;p.suppTurns=0;p.defeated=false;});
+  updateMeta();renderAll();
+}
+
+// ── TURNS ──
+function nextTurn(){
+  currentTurn=(currentTurn+1)%numPlayers;
+  turnCount++;
+  updateMeta();renderAll();
+}
+
+function nextRound(){
+  round++;turnCount++;currentTurn=0;
+  players.forEach(p=>{
+    if(p.sparTurns>0)p.sparTurns--;
+    if(p.suppTurns>0)p.suppTurns--;
+  });
+  updateMeta();renderAll();
+}
+
+function updateMeta(){
+  document.getElementById('rNum').textContent=round;
+  document.getElementById('tNum').textContent=turnCount;
+  const p=players[0];
+  document.getElementById('stripInfo').innerHTML=
+    `Round <b style="color:var(--gold-l)">${round}</b> &nbsp;·&nbsp; HP: <b style="color:var(--blue)">${numOf(p?.hp||[0,0,0])}</b>`;
+}
+
+// ── DRUM ──
+function changeDrum(pi,di,delta){
+  if(players[pi].defeated)return;
+  players[pi].hp[di]=(players[pi].hp[di]+delta+10)%10;
+  const el=document.getElementById(`d${pi}${di}`);
+  if(el){
+    el.classList.remove('aup','adn');
+    void el.offsetWidth;
+    el.classList.add(delta>0?'aup':'adn');
+    el.textContent=players[pi].hp[di];
+  }
+  const tot=document.getElementById(`htot${pi}`);
+  if(tot)tot.textContent=numOf(players[pi].hp);
+  const bar=document.getElementById(`hbar${pi}`);
+  const n=numOf(players[pi].hp);
+  const perc=Math.round(n/players[pi].maxHp*100);
+  if(bar){
+    bar.style.width=Math.min(100,perc)+'%';
+    bar.style.background=perc>50?'linear-gradient(90deg,var(--gold-d),var(--gold))':perc>25?'linear-gradient(90deg,#8b4000,#e67e22)':'linear-gradient(90deg,#5a0000,#c0392b)';
+  }
+}
+
+// ── COUNTERS ──
+function changeSpar(pi,delta){
+  if(players[pi].defeated)return;
+  players[pi].sparTurns=Math.max(0,players[pi].sparTurns+delta);
+  refreshCounters(pi);
+}
+function changeSupp(pi,delta){
+  if(players[pi].defeated)return;
+  players[pi].suppTurns=Math.max(0,players[pi].suppTurns+delta);
+  refreshCounters(pi);
+}
+
+function refreshCounters(pi){
+  const p=players[pi];
+  const sv=document.getElementById(`sv${pi}`);
+  const sn=document.getElementById(`sn${pi}`);
+  const uv=document.getElementById(`uv${pi}`);
+  const un=document.getElementById(`un${pi}`);
+  if(sv){sv.textContent=p.sparTurns;sv.className='c-val'+(p.sparTurns>0?' spar-on':'');}
+  if(sn){
+    if(p.sparTurns===0){sn.textContent='Inactive';sn.className='c-note';}
+    else if(p.sparTurns===1){sn.textContent='Last turn!';sn.className='c-note warn';}
+    else{sn.textContent=p.sparTurns+' turns left';sn.className='c-note';}
+  }
+  if(uv){uv.textContent=p.suppTurns;uv.className='c-val'+(p.suppTurns>0?' supp-on':'');}
+  if(un){
+    if(p.suppTurns===0){un.textContent='Not in play';un.className='c-note';}
+    else if(p.suppTurns===1){un.textContent='Expires now!';un.className='c-note warn';}
+    else{un.textContent=p.suppTurns+' turns left';un.className='c-note good';}
+  }
+}
+
+// ── NAME ──
+function updateName(pi,v){players[pi].name=v;updateMeta();}
+
+// ── DEFEAT ──
+function toggleDefeat(pi){
+  const p=players[pi];
+  if(p.defeated){
+    // Restore
+    p.defeated=false;p.hp=digitsOf(p.maxHp);p.sparTurns=0;p.suppTurns=0;
+    renderAll();
+  } else {
+    if(!confirm('Mark '+p.name+' as defeated?'))return;
+    p.defeated=true;p.hp=[0,0,0];p.sparTurns=0;p.suppTurns=0;
+    renderAll();
+    // check all defeated → last standing wins
+    const alive=players.filter(x=>!x.defeated);
+    if(alive.length===1) setTimeout(()=>alert('🏆 '+alive[0].name+' wins!'),200);
+  }
+}
+
+// ── RENDER ──
+function renderAll(){
+  document.getElementById('playersGrid').innerHTML=players.map((p,pi)=>buildCard(p,pi)).join('');
+}
+
+function buildCard(p,pi){
+  const isActive=pi===currentTurn&&!p.defeated;
+  const n=numOf(p.hp);
+  const perc=Math.min(100,Math.round(n/p.maxHp*100));
+  const barColor=perc>50?'linear-gradient(90deg,var(--gold-d),var(--gold))':perc>25?'linear-gradient(90deg,#8b4000,#e67e22)':'linear-gradient(90deg,#5a0000,#c0392b)';
+
+  const sparNote=p.sparTurns===0?'Inactive':p.sparTurns===1?'Last turn!':p.sparTurns+' turns left';
+  const sparNoteCls=p.sparTurns===1?'warn':'';
+  const suppNote=p.suppTurns===0?'Not in play':p.suppTurns===1?'Expires now!':p.suppTurns+' turns left';
+  const suppNoteCls=p.suppTurns===0?'':p.suppTurns===1?'warn':'good';
+
+  const drums=[0,1,2].map(di=>`
+    <div class="drum">
+      <button class="drum-btn" onclick="changeDrum(${pi},${di},1)">&#9650;</button>
+      <div class="drum-face">
+        <div class="drum-digit" id="d${pi}${di}">${p.hp[di]}</div>
+      </div>
+      <button class="drum-btn" onclick="changeDrum(${pi},${di},-1)">&#9660;</button>
+    </div>`).join('');
+
+  return `
+  <div class="pcard${p.defeated?' defeated':''}" id="pcard${pi}">
+    <div class="pcard-head">
+      <input class="pname-input" value="${p.name}" oninput="updateName(${pi},this.value)" placeholder="Player">
+    </div>
+    <div class="pcard-body">
+
+      <div class="hp-section">
+        <div class="sec-lbl">HP</div>
+        <div class="drum-row">
+          <div class="drum-group">${drums}</div>
+          <div class="hp-readout">
+            <span class="hp-big" id="htot${pi}">${n}</span>
+            <span class="hp-lbl">HP</span>
+          </div>
+        </div>
+        <div class="hp-bar-wrap">
+          <div class="hp-bar-fill" id="hbar${pi}" style="width:${perc}%;background:${barColor}"></div>
+        </div>
+      </div>
+
+      <div class="counters-row">
+        <div class="counter-box">
+          <div class="counter-lbl">⚡ SPAR turns</div>
+          <div class="counter-ctrl">
+            <button class="c-btn" onclick="changeSpar(${pi},-1)">&#8722;</button>
+            <div class="c-val${p.sparTurns>0?' spar-on':''}" id="sv${pi}">${p.sparTurns}</div>
+            <button class="c-btn" onclick="changeSpar(${pi},1)">+</button>
+          </div>
+          <div class="c-note${sparNoteCls?' '+sparNoteCls:''}" id="sn${pi}">${sparNote}</div>
+        </div>
+        <div class="counter-box">
+          <div class="counter-lbl">✨ Supporter</div>
+          <div class="counter-ctrl">
+            <button class="c-btn" onclick="changeSupp(${pi},-1)">&#8722;</button>
+            <div class="c-val${p.suppTurns>0?' supp-on':''}" id="uv${pi}">${p.suppTurns}</div>
+            <button class="c-btn" onclick="changeSupp(${pi},1)">+</button>
+          </div>
+          <div class="c-note${suppNoteCls?' '+suppNoteCls:''}" id="un${pi}">${suppNote}</div>
+        </div>
+      </div>
+
+      <div class="defeat-row">
+        <button class="defeat-btn${p.defeated?' is-defeated':''}" onclick="toggleDefeat(${pi})">
+          ${p.defeated?'↩ Restore':'💀 Defeat'}
+        </button>
+      </div>
+
+    </div>
+  </div>`;
+}
+</script>
+</body>
+</html>
