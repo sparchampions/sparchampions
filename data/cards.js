@@ -456,6 +456,14 @@ const CHAMPIONS = [
     sparAbility: "Knight above king! Deal 30 DP or heal 20 HP.",
     image: "high-knight.png"
   },
+  {
+    name: "Obsidian Knight",
+    category: "Knights",
+    hp: 70,
+    sparRoll: 1,
+    sparAbility: "Obsidian block! Dodge 2 turns and opponents attack weakened by 1 forever!",
+    image: "obsidian-knight.png"
+  },
 
   // ── ELVES ────────────────────────────────────────────────
   {
