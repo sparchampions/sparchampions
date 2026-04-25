@@ -464,6 +464,14 @@ const CHAMPIONS = [
     sparAbility: "Obsidian block! Dodge 2 turns and opponents attack weakened by 1 forever!",
     image: "obsidian-knight.png"
   },
+  {
+    name: "Fire Knight",
+    category: "Knights",
+    hp: 70,
+    sparRoll: 1,
+    sparAbility: "Raging fire engulfs! Deal 40 DP to your opponent!",
+    image: "fire-knight.png"
+  },
 
   // ── ELVES ────────────────────────────────────────────────
   {
