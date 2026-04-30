@@ -535,7 +535,7 @@ const CHAMPIONS = [
     category: "Elves",
     hp: 60,
     sparRoll: 3,
-    sparAbility: "Lightning strikes! Increase attack by 2 forever and deal 30 DP now.",
+    sparAbility: "Electricity sparks ! Increase attack by 2 forever and deal 30 DP now.",
     image: "electric-elf.png"
   },
   
@@ -602,7 +602,7 @@ const CHAMPIONS = [
     category: "Monks",
     hp: 60,
     sparRoll: 4,
-    sparAbility: "Charm opponent with music! opponent attack reduced by 2 and dodge 3 turns.",
+    sparAbility: "Charm opponent with music! opponent attack reduced by 2 forever and dodge 3 turns.",
     image: "monk-of-music.png"
   },
 
