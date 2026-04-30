@@ -519,9 +519,26 @@ const CHAMPIONS = [
     category: "Elves",
     hp: 65,
     sparRoll: 6,
-    sparAbility: "Burn fire unleashed! Increase attack by 15 for 2 turns.",
+    sparAbility: "Burning fire unleashed! Increase attack by 15 for 2 turns.",
     image: "fire-elf.png"
   },
+  {
+    name: "Nature Elf",
+    category: "Elves",
+    hp: 70,
+    sparRoll: 3,
+    sparAbility: "Nature heals you! Heal 30 HP.",
+    image: "nature-elf.png"
+  },
+  {
+    name: " Electric Elf",
+    category: "Elves",
+    hp: 60,
+    sparRoll: 3,
+    sparAbility: "Lightning strikes! Increase attack by 2 forever and deal 30 DP now.",
+    image: "electric-elf.png"
+  },
+  
 
   // ── MONKS ────────────────────────────────────────────────
   {
