@@ -589,6 +589,22 @@ const CHAMPIONS = [
     sparAbility: "Healing activates! Heal 25 HP.",
     image: "monk-of-healing.png"
   },
+  {
+    name: "Monk of technology",
+    category: "Monks",
+    hp: 70,
+    sparRoll: 2,
+    sparAbility: "Become a Cyborg! Heal 15 HP Deal 15 Dp and dodge 3 turns.",
+    image: "monk-of-technology.png"
+  },
+  {
+    name: "Monk of Music",
+    category: "Monks",
+    hp: 60,
+    sparRoll: 4,
+    sparAbility: "Charm opponent with music! opponent attack reduced by 2 and dodge 3 turns.",
+    image: "monk-of-music.png"
+  },
 
   // ── INSECTS ──────────────────────────────────────────────
   {
