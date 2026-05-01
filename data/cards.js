@@ -644,7 +644,7 @@ const CHAMPIONS = [
     category: "Insects",
     hp: 65,
     sparRoll: 5,
-    sparAbility: "Venom strikes! Deal 10 damage then increase DP by 4.",
+    sparAbility: "Venom strikes! Deal 10 damage then increase DP by 4 forever.",
     image: "metallic-spider.png"
   },
   {
