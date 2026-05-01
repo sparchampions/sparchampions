@@ -655,6 +655,23 @@ const CHAMPIONS = [
     sparAbility: "Luck prevails! Under 5 HP heal 40 HP else heal 5.",
     image: "lucky-ladybug.png"
   },
+  {
+    name: " Buzzing Bee",
+    category: "Insects",
+    hp: 60,
+    sparRoll: 6,
+    sparAbility: "Bee sting! Deal 25 DP and increase attack by 2 forever .",
+    image: "buzzing-bee.png"
+  },
+  {
+    name: "Crazy Cockroach",
+    category: "Insects",
+    hp: 75,
+    sparRoll: 6,
+    sparAbility: "Extreme tolerance! Dodge 5 turns .",
+    image: "crazy-cockroach.png"
+  },
+  
 // ── INSECTS ──────────────────────────────────────────────
   {
     name: "Great Sword",
