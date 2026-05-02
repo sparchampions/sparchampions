@@ -726,8 +726,8 @@ const CHAMPIONS = [
     category: "Relics",
     hp: 75,
     sparRoll: 6,
-    sparAbility: "Sharp swipe!Deal 20 DP.",
-    image: "shining-dimond.png" 
+    sparAbility: "Sharp swipe! Deal 20 DP.",
+    image: "shining-diamond.png" 
   },
   {
     name: "Magical Amber ",
