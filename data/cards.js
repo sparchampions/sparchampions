@@ -720,7 +720,24 @@ const CHAMPIONS = [
     sparRoll: 6,
     sparAbility: "Ancient magic flows! Add 5 more DP for the next 5 turns!",
     image: "mythical-compass.png"
+  },
+  {
+    name: "Shinning Dimond",
+    category: "Relics",
+    hp: 75,
+    sparRoll: 6,
+    sparAbility: "Sharp swipe!Deal 20 DP.",
+    image: "shinning-dimond.png" 
+  },
+  {
+    name: "Magical Amber ",
+    category: "Relics",
+    hp: 60,
+    sparRoll: 3,
+    sparAbility: "Sticky sap engulfs! Opponent's turn skipped for 4 turns",
+    image: "magical-amber.png"
   }
+  
 
 ];
 
