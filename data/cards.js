@@ -722,12 +722,12 @@ const CHAMPIONS = [
     image: "mythical-compass.png"
   },
   {
-    name: "Shinning Dimond",
+    name: "Shining Dimond",
     category: "Relics",
     hp: 75,
     sparRoll: 6,
     sparAbility: "Sharp swipe!Deal 20 DP.",
-    image: "shinning-dimond.png" 
+    image: "shining-dimond.png" 
   },
   {
     name: "Magical Amber ",
