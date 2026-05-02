@@ -669,7 +669,7 @@ const CHAMPIONS = [
     hp: 75,
     sparRoll: 6,
     sparAbility: "Extreme tolerance! Dodge 5 turns .",
-    image: "crazy-cockroach.png"
+    image: "crazy-crazy-cockroach.png"
   },
   
 // ── INSECTS ──────────────────────────────────────────────
